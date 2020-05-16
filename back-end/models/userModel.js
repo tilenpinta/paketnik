@@ -9,7 +9,13 @@ var userSchema = new Schema({
 });
 
 
-
+/*
+*     userModel.findOne({$or: [{email: userReq.email},{username: userReq.username}]}, function (err, user) {
+            if (err || user) {
+                return false;
+            }
+        });
+* */
 //authenticate input against database
 userSchema.statics.authenticate = function (username, password, callback) {
   User.findOne({ username: username })
@@ -29,6 +35,21 @@ userSchema.statics.authenticate = function (username, password, callback) {
         }
       })
     });
+}
+/**
+ *  Funkcija preveri če uporabnik že obstaja po uporabniškem imenu
+ *  ali po e-naslovu
+ *
+ * @param username uporabniško ime iz zahteve za registracijo (req.body.username)
+ * @param email e-naslov iz zahteve za registracijo (req.body.email)
+ */
+userSchema.statics.checkUser = function (username, email) {
+    User.findOne({$or: [{email: email},{username: username}]})
+        .exec(function (err, user) {
+            if (err) {
+                return false;
+            } else return !user;
+        });
 }
 
 //hashing a password before saving it to the database

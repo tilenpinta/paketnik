@@ -47,22 +47,27 @@ module.exports = {
      * userController.create()
      */
     create: function (req, res) {
-        var user = new userModel({
+        var userReq = new userModel({
 			email : req.body.email,
 			username : req.body.username,
 			password : req.body.password
 
         });
 
-        user.save(function (err, user) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when creating user',
-                    error: err
-                });
-            }
-            return res.status(201).json(user);
-        });
+        if(userModel.checkUser(userReq.username, userReq.email)) {
+            userReq.save(function (err, user) {
+                if (err) {
+                    return res.status(500).json({
+                        message: 'Error when creating user',
+                        error: err
+                    });
+                }
+                return res.status(201).json(userReq);
+            });
+        }
+        else{
+            return res.json("Fuck");
+        }
     },
     /**
      * userController.login()

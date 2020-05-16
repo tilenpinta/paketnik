@@ -1,19 +1,20 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+//config.js exporta string za povezavo s podatkovno bazo
+const dataInfo = require('./config.js')
+const  createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
 
 //povezava z bazo
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 //Set up default mongoose connection
-var mongoDB = 'mongodb://127.0.0.1/my_database';
-mongoose.connect(mongoDB);
+mongoose.connect(dataInfo.database, { useNewUrlParser:true });
 // Get Mongoose to use the global promise library
 mongoose.Promise = global.Promise;
 //Get the default connection
-var db = mongoose.connection;
+const db = mongoose.connection;
 
 //Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -21,25 +22,26 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 
 
-var indexRouter = require('./routes/index');
+const indexRouter = require('./routes/index');
 //spremenimo route
-var usersRouter = require('./routes/userRoutes');
-var photoRouter = require('./routes/photoRoutes');
-var app = express();
+const usersRouter = require('./routes/userRoutes');
+const photoRouter = require('./routes/photoRoutes');
+const mailboxRouter = require('./routes/mailboxRoutes');
+const app = express();
 
 //CORS
-var cors = require('cors');
-var allowedOrigins = ['http://localhost:4200','http://localhost:3000',
-                      'http://yourapp.com'];
+const cors = require('cors');
+const allowedOrigins = ['http://localhost:4200','http://localhost:3000',
+  'http://yourapp.com'];
 app.use(cors({
   credentials: true,
   origin: function(origin, callback){
-    // allow requests with no origin 
+    // allow requests with no origin
     // (like mobile apps or curl requests)
     if(!origin) return callback(null, true);
     if(allowedOrigins.indexOf(origin) === -1){
-      var msg = 'The CORS policy for this site does not ' +
-                'allow access from the specified Origin.';
+      const msg = 'The CORS policy for this site does not ' +
+          'allow access from the specified Origin.';
       return callback(new Error(msg), false);
     }
     return callback(null, true);
@@ -52,7 +54,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
 //seja
-var session = require('express-session');
+const session = require('express-session');
 app.use(session({
   secret: 'work hard',
   resave: true,
@@ -68,6 +70,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/photos', photoRouter);
+app.use('/mailboxes', mailboxRouter);
+app.set('json spaces', 1)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
