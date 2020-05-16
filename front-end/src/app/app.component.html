@@ -1,0 +1,76 @@
+<!--Bootstrap vzorec je vzet iz vaje 3.-->
+<div class="container text-center">    
+
+        <!-- ustvarimo navbar meni po bootstrap vzorcu-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+          <!-- Naslov na meniju -->
+          <a class="navbar-brand" href="#"> {{ title }}</a>
+
+          <!-- gumb, ki se pojavi, ko se meni zaradi širine zaslona skrije, in omogoča vertikalno razširitev menija -->
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <!-- Vsebina menija -->
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+            <!-- levi meni z opcijami za navigacijo -->
+            <ul class="navbar-nav mr-auto">
+             
+              <!-- V seznamu nastavljamo povezave s pomočjo lastnosti routerLink -->
+              <li class="nav-item">
+                <a class="nav-link"  routerLink="/photos">Zid</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" >Vroče</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" >Uporabniki</a>
+              </li>
+              <li *ngIf="isLoggedIn()" class="nav-item">
+                <a class="nav-link"  routerLink="/add-photo">Dodaj sliko</a>
+              </li>
+             
+            </ul>
+            <!-- desni meni z opcijami za prijavo in registracijo in fotnawesome ikonami v znački i -->
+            <!-- uporaba *ngIf in funkcije, ki preverja prijavo omgoča prilagajanje vmesnika glede na status prijave -->
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item"><a  class="nav-link" href="#"><i class="fas fa-user"></i> Registracija</a></li>
+              <!-- dogodek click z odjavo -->
+              <li *ngIf="isLoggedIn()" class="nav-item"><a class="nav-link"  (click)="logout()"><i class="fas fa-sign-out-alt"></i> Odjava</a></li>
+              <li *ngIf="!isLoggedIn()" class="nav-item"><a class="nav-link"  routerLink="/user-login"><i class="fas fa-sign-in-alt"></i> Prijava</a></li>
+            </ul>
+          </div>
+        </nav>
+
+        <!-- naredimo mrežo kjer ima sredinski element širino 8, ostala dva pa vzameta preostalo širino  -->
+        
+        <div class="row content">
+          <div class="col-sm-8 text-left"> 
+
+          <!-- vklučimo output routerja -->
+         <router-outlet></router-outlet>
+         <!--<app-photos></app-photos> -->
+          
+
+          </div>
+          <div class="col-sm">
+            <div class="card">
+              <p>Reklame</p>
+            </div>
+            <div class="card">
+              <p>Reklame</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="container text-center">
+        <p>Demo Angular - Marko Ferme 2018</p>
+      </footer>
+
+
+
+
+

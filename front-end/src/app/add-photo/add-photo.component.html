@@ -1,0 +1,6 @@
+<div class="form-group">
+    <input [(ngModel)]="photo.name" type="text" class="form-control" name="ime" placeholder="Ime slike" required="" autofocus="" />
+    <label for="file">Izberi sliko</label>
+    <input type="file" id="file" (change)="handleFileInput($event.target.files)">
+<button class="btn btn-lg btn-primary btn-block"  name="Save" value="Shrani" (click)="addPhoto()" >Naloži</button>  			
+</div>

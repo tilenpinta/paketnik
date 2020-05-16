@@ -1,0 +1,9 @@
+<h2>Slike</h2>
+<!-- z ngfor ponovimo značko, glede na to, koliko elementov, se nahaja v polji -->
+<div *ngFor="let photo of photos" class="card bg-dark text-dark mb-2" [routerLink]="['/photo',photo._id]">
+	
+  <img class="card-img" src="{{photoHost+photo.path}}" alt="{{photo.name}}">
+  <div class="card-img-overlay">
+    <h5 class="card-title">{{photo.name}}</h5>
+  </div>
+</div>
