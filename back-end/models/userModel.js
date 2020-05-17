@@ -1,29 +1,28 @@
-var mongoose = require('mongoose');
-var bcrypt = require('bcrypt');
-var Schema   = mongoose.Schema;
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const Schema   = mongoose.Schema;
 
-var userSchema = new Schema({
+const userSchema = new Schema({
 	'email' : String,
 	'username' : String,
 	'password' : String
 });
 
 
-/*
-*     userModel.findOne({$or: [{email: userReq.email},{username: userReq.username}]}, function (err, user) {
-            if (err || user) {
-                return false;
-            }
-        });
-* */
-//authenticate input against database
+/**
+ * Avtentikacija ob prijavi uporabnika
+ *
+ * @param username poišče uporabnika v PB po tem uporabniškem imenu
+ * @param password preveri če se ta vnos ujema z vrednostjo v PB
+ * @param callback vrne nam uporabnika v primeru, da je avtentikacija bila uspešna
+ */
 userSchema.statics.authenticate = function (username, password, callback) {
   User.findOne({ username: username })
     .exec(function (err, user) {
       if (err) {
         return callback(err)
       } else if (!user) {
-        var err = new Error('User not found.');
+        let err = new Error('User not found.');
         err.status = 401;
         return callback(err);
       }
@@ -36,12 +35,13 @@ userSchema.statics.authenticate = function (username, password, callback) {
       })
     });
 }
+
 /**
- *  Funkcija preveri če uporabnik že obstaja po uporabniškem imenu
+ *  Preveri če uporabnik že obstaja v PB po uporabniškem imenu
  *  ali po e-naslovu
  *
- * @param username uporabniško ime iz zahteve za registracijo (req.body.username)
- * @param email e-naslov iz zahteve za registracijo (req.body.email)
+ * @param username poišče uporabnika v PB po tem uporabniškem imenu
+ * @param email poišče uporabnika v PB po tem e-naslovu
  */
 userSchema.statics.checkUser = function (username, email) {
     User.findOne({$or: [{email: email},{username: username}]})
@@ -52,9 +52,11 @@ userSchema.statics.checkUser = function (username, email) {
         });
 }
 
-//hashing a password before saving it to the database
+/**
+ * Naredi hash vrednost za geslo, ki ga je uporabnik vnesel
+ */
 userSchema.pre('save', function (next) {
-  var user = this;
+  let user = this;
   bcrypt.hash(user.password, 10, function (err, hash) {
     if (err) {
       return next(err);
@@ -64,5 +66,5 @@ userSchema.pre('save', function (next) {
   })
 });
 
-var User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
 module.exports = User;

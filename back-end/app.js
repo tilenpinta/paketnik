@@ -1,5 +1,5 @@
 //config.js exporta string za povezavo s podatkovno bazo
-const dataInfo = require('./config.js')
+const dataInfo = require("./config.js");
 const  createError = require('http-errors');
 const express = require('express');
 const path = require('path');

@@ -1,4 +1,4 @@
-var mailboxModel = require('../models/mailboxModel.js');
+const mailboxModel = require('../models/mailboxModel.js');
 
 /**
  * mailboxController.js
@@ -26,8 +26,8 @@ module.exports = {
      * mailboxController.show()
      */
     show: function (req, res) {
-        var id = req.params.id;
-        mailboxModel.findOne({_id: id}, function (err, mailboxes) {
+        let id = req.params.id;
+        mailboxModel.findOne({registrationId: id}, function (err, mailboxes) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting mailbox.',
@@ -43,6 +43,10 @@ module.exports = {
         });
     },
 
+    showRegistration: function (req, res) {
+        res.render('mailbox/paketnikReg');
+    },
+
     /**
      * mailboxController.create()
      */
@@ -50,7 +54,6 @@ module.exports = {
         var mailbox = new mailboxModel({
 			registrationId : req.body.registrationId,
 			unlockKey : req.body.unlockKey,
-
         });
 
         mailbox.save(function (err, mailbox) {
@@ -64,6 +67,39 @@ module.exports = {
         });
     },
 
+    /**
+     * Funkcija, ki "poveze" prijavljenega uporabnika z njegovim paketnikom
+     * Shrani _id prijavljenega uporabnika v modelu Mailbox v primeru uspešne registracije paketnika
+     *
+     * @param req preko zahteve pride id za registracijo paketnika (registrationId v modelu Mailbox)
+     * @param res vrnemo potrditev o uspesni registraciji / o napaki / usmerimo uporabnika na stran za prijavo
+     * @param next
+     */
+    register: function (req, res,next) {
+        if (req.session.userId) {
+            mailboxModel.validation(req.body.registrationId, (error, mailbox) => {
+                if (error || !mailbox) {
+                    let err = new Error("Id" + req.body.registrationId);
+                    err.status = 401;
+                    return next(err);
+                } else {
+                    mailbox.ownerId = req.session.userId ? req.session.userId : mailbox.ownerId;
+                    mailbox.save(err => {
+                        if (err) {
+                            return res.status(500).json({
+                                message: 'Error when updating mailbox.',
+                                error: err
+                            });
+                        }
+                        return res.json("Uspesno ste registrirali vas paketnik");
+                    });
+                }
+            });
+        }
+        else {
+            res.redirect('../../users/login');
+        }
+    },
     /**
      * mailboxController.update()
      */

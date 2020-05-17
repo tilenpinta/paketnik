@@ -1,4 +1,4 @@
-var userModel = require('../models/userModel.js');
+const userModel = require('../models/userModel.js');
 
 /**
  * userController.js
@@ -26,7 +26,7 @@ module.exports = {
      * userController.show()
      */
     show: function (req, res) {
-        var id = req.params.id;
+        const id = req.params.id;
         userModel.findOne({_id: id}, function (err, user) {
             if (err) {
                 return res.status(500).json({
@@ -44,10 +44,10 @@ module.exports = {
     },
 
     /**
-     * userController.create()
+     * Funkcija za registracijo uporabnika
      */
     create: function (req, res) {
-        var userReq = new userModel({
+        let userReq = new userModel({
 			email : req.body.email,
 			username : req.body.username,
 			password : req.body.password
@@ -55,7 +55,7 @@ module.exports = {
         });
 
         if(userModel.checkUser(userReq.username, userReq.email)) {
-            userReq.save(function (err, user) {
+            userReq.save( err => {
                 if (err) {
                     return res.status(500).json({
                         message: 'Error when creating user',
@@ -83,7 +83,7 @@ module.exports = {
     login: function (req, res,next) {
       userModel.authenticate(req.body.username, req.body.password, function (error, user) {
       if (error || !user) {
-        var err = new Error('Wrong username or password.');
+        let err = new Error('Wrong username or password.');
         err.status = 401;
         return next(err);
       } else {
@@ -119,7 +119,7 @@ module.exports = {
         return next(error);
       } else {
         if (user === null) {
-          var err = new Error('Not authorized! Go back!');
+          let err = new Error('Not authorized! Go back!');
           err.status = 400;
           return next(err);
         } else {
@@ -132,7 +132,7 @@ module.exports = {
      * userController.update()
      */
     update: function (req, res) {
-        var id = req.params.id;
+        const id = req.params.id;
         userModel.findOne({_id: id}, function (err, user) {
             if (err) {
                 return res.status(500).json({
@@ -167,7 +167,7 @@ module.exports = {
      * userController.remove()
      */
     remove: function (req, res) {
-        var id = req.params.id;
+        const id = req.params.id;
         userModel.findByIdAndRemove(id, function (err, user) {
             if (err) {
                 return res.status(500).json({

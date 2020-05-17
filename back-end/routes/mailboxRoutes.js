@@ -5,18 +5,18 @@ var mailboxController = require('../controllers/mailboxController.js');
 /*
  * GET
  */
-const nekaj = "fff";
 router.get('/',mailboxController.list);
 
 /*
  * GET
  */
+router.get('/register', mailboxController.showRegistration);
 router.get('/:id', mailboxController.show);
-
 /*
  * POST
  */
-router.post('/', mailboxController.create);
+//router.post('/', mailboxController.create);
+router.post('/register', mailboxController.register);
 
 /*
  * PUT

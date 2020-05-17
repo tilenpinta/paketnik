@@ -1,8 +1,39 @@
-var mongoose = require('mongoose');
-var Schema   = mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema   = mongoose.Schema;
 
-var mailboxSchema = new Schema({
+const mailboxSchema = new Schema({
 	'registrationId' : String,
-	'unlockKey' : String
+	'unlockKey' : String,
+	'ownerId' : String
 });
-module.exports = mongoose.model('mailbox', mailboxSchema);
+
+/**
+ * Preveri,če paket obstaja s takšno registracijsko številko
+ *
+ *
+ * @param regId registracijska številka za registracijo paketnika, ki jo poda prijavljeni uporabnik
+ * @param callback v primeru, da so pogoji izpolnjeni, vrne nam paketnik za registracijo
+ */
+mailboxSchema.statics.validation = (regId, callback) => {
+	console.log("From foo:" +regId);
+	Mailbox.findOne({ registrationId: regId })
+		.exec(function (err, mailbox) {
+			if (err) {
+				return callback(err)
+			} else if (!mailbox) {
+				let err = new Error('Mailbox not found.');
+				err.status = 401;
+				return callback(err);
+			} else if(mailbox.ownerId.length > 0){
+				let err = new Error('Paketnik ze ima lastnika');
+				err.status = 401;
+				return callback(err);
+			} else {
+				return callback(null, mailbox);
+			}
+		});
+}
+
+const Mailbox = mongoose.model('Mailbox', mailboxSchema);
+
+module.exports = Mailbox;
