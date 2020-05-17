@@ -1,4 +1,5 @@
 const mailboxModel = require('../models/mailboxModel.js');
+const request = require('request');
 
 /**
  * mailboxController.js
@@ -36,7 +37,7 @@ module.exports = {
             }
             if (!mailboxes) {
                 return res.status(404).json({
-                    message: 'No such mailbox'
+                    message: 'No such mailbox...'
                 });
             }
             return res.json(mailboxes);
@@ -100,11 +101,50 @@ module.exports = {
             res.redirect('../../users/login');
         }
     },
+
+    showInsertToken: (req, res) => {
+        res.render('mailbox/insert-token');
+    },
+    /**
+     * Pokliče se api od direct4.me za pridobitev žetona
+     * @param req
+     * @param res
+     * @return json, ki ima samo base64String za .wav datoteko, ki se bo predvajala
+     */
+    getToken: (req,res) => {
+        const urlString = 'http://api-test.direct4.me/Sandbox/PublicAccess/V1/api/access/OpenBox?boxID='
+            + req.body.mailboxId + '&tokenFormat=2';
+
+        request.post(urlString,  (error, response) => {
+           let output = JSON.parse(response.body);
+           /**
+            * v primeru, da je paket najden, api nam vrne json odgovor, ki vsebuje
+            * base64String za .wav datoteko
+            */
+            if (!error && response.statusCode === 200 && output.Result === 0) {
+                //let keyNames = Object.keys(output);
+               console.log(output);
+                return res.json(output.Data);
+            }
+            /**
+             * v primeru, da paket s tem id ne obstaja
+             */
+            else if(!error && response.statusCode === 200 && output.Result === 10009) {
+                return res.json(output.Message);
+            }
+            else if(!error && response.statusCode === 200 && output.Result !== 0 && output.Result !== 10009) {
+                return res.json(output.Message);
+            }
+            else {
+                return res.json('Ouch, nekaj je šlo narobe');
+            }
+        });
+    },
     /**
      * mailboxController.update()
      */
     update: function (req, res) {
-        var id = req.params.id;
+        const id = req.params.id;
         mailboxModel.findOne({_id: id}, function (err, mailbox) {
             if (err) {
                 return res.status(500).json({
