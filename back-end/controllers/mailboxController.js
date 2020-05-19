@@ -45,11 +45,11 @@ module.exports = {
     },
 
     showRegistration: function (req, res) {
-        res.render('mailbox/paketnikReg');
+        res.render('mailbox/paketnik-register');
     },
 
     /**
-     * mailboxController.create()
+     * Preko te metode lahko samo admin dodaja nove paketnike
      */
     create: function (req, res) {
         var mailbox = new mailboxModel({
@@ -188,5 +188,9 @@ module.exports = {
             }
             return res.status(204).json();
         });
+    },
+
+    showAddMailbox: (req, res) => {
+        res.render('mailbox/add-mailbox');
     }
 };

@@ -1,26 +1,60 @@
-var express = require('express');
-var router = express.Router();
-var mailboxController = require('../controllers/mailboxController.js');
+const express = require('express');
+const router = express.Router();
+const mailboxController = require('../controllers/mailboxController.js');
 
-/*
- * GET
+function requiresCustomerOrAdmin(req, res, next) {
+    if (req.session && req.session.userId && (req.session.isOrdinaryUser || req.session.isAdmin) )  {
+        return next();
+    } else {
+        const err = new Error('Dostop ni dovoljen!');
+        err.status = 401;
+        return next(err);
+    }
+}
+
+function requiresCustomer (req, res, next) {
+    if (req.session && req.session.userId && req.session.isOrdinaryUser)  {
+        return next();
+    } else {
+        const err = new Error('Dostop ni dovoljen!');
+        err.status = 401;
+        return next(err);
+    }
+}
+
+function requiresCourier(req, res, next) {
+    if (req.session && req.session.userId && !req.session.isOrdinaryUser)  {
+        return next();
+    } else {
+        const err = new Error('Dostop ni dovoljen!');
+        err.status = 401;
+        return next(err);
+    }
+}
+
+function requiresPrivilegedUser(req, res, next) {
+    if (req.session && req.session.userId && req.session.isAdmin)  {
+        return next();
+    } else {
+        const err = new Error('Dostop ni dovoljen!');
+        err.status = 401;
+        return next(err);
+    }
+}
+
+router.get('/', requiresCustomerOrAdmin, mailboxController.list);
+router.get('/addMailbox', requiresPrivilegedUser, mailboxController.showAddMailbox);
+router.get('/register', requiresCustomer, mailboxController.showRegistration);
+router.get('/token', requiresCourier, mailboxController.showInsertToken)
+router.get('/:id', requiresCustomerOrAdmin, mailboxController.show);
+
+
+//router.post('/', requiresPrivilegedUser, mailboxController.create); // TODO
+router.post('/register',  requiresCustomer, mailboxController.register);
+/**
+ * preko te metode bo dostavljalec zahteval, da uporabnik odklene paketnik
  */
-router.get('/',mailboxController.list);
-
-/*
- * GET
- */
-router.get('/register', mailboxController.showRegistration);
-router.get('/token', mailboxController.showInsertToken)
-
-router.get('/:id', mailboxController.show);
-
-/*
- * POST
- */
-//router.post('/', mailboxController.create);
-router.post('/register', mailboxController.register);
-router.post('/token', mailboxController.getToken)
+router.post('/token', requiresCourier, mailboxController.getToken)
 
 /*
  * PUT
@@ -33,29 +67,4 @@ router.put('/:id', mailboxController.update);
 router.delete('/:id', mailboxController.remove);
 
 module.exports = router;
-
-/*
-const formData = {
-  // Pass a simple key-value pair
-  my_field: 'my_value',
-  // Pass data via Buffers
-  my_buffer: Buffer.from([1, 2, 3]),
-  // Pass data via Streams
-  my_file: fs.createReadStream(__dirname + '/unicycle.jpg'),
-  // Pass multiple values /w an Array
-  attachments: [
-    fs.createReadStream(__dirname + '/attachment1.jpg'),
-    fs.createReadStream(__dirname + '/attachment2.jpg')
-  ],
-  // Pass optional meta-data with an 'options' object with style: {value: DATA, options: OPTIONS}
-  // Use case: for some types of streams, you'll need to provide "file"-related information manually.
-  // See the `form-data` README for more information about options: https://github.com/form-data/form-data
-  custom_file: {
-    value:  fs.createReadStream('/dev/urandom'),
-    options: {
-      filename: 'topsecret.jpg',
-      contentType: 'image/jpeg'
-    }
-  }
-};*/
 

@@ -4,7 +4,9 @@ const Schema   = mongoose.Schema;
 const mailboxSchema = new Schema({
 	'registrationId' : String,
 	'unlockKey' : String,
-	'ownerId' : String
+	'ownerId' : String,
+	'requireUnlock' : Boolean, // ko vpise id paketnika (000541), dostavljalec to nastavi na true
+	'isLocked': Boolean, // to je privzeto na true, lahko pa uporabnik spreminja
 });
 
 /**

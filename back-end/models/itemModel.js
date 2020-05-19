@@ -7,7 +7,8 @@ const itemSchema = new Schema({
 	'name' : String,
 	'weight' : Number,
 	'quantity' : Number,
-	'barcode' : String
+	'barcode' : String,
+	'customerId': String
 });
 
 const toInt = function( numString ) {

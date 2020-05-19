@@ -51,8 +51,8 @@ module.exports = {
 			name : req.body.name,
 			weight : req.body.weight,
 			quantity : req.body.quantity,
-			barcode : req.body.barcode
-
+			barcode : req.body.barcode,
+            customerId : req.session.userId
         });
 
         item.save( (err, item) => {
@@ -126,10 +126,11 @@ module.exports = {
         const validBarcode = itemModel.generateBarcode();
 
         const item = new itemModel({
-            name : req.body.name,
-            weight : req.body.weight,
+            name : req.body.itemname,
+            weight : req.body.itemweight,
             quantity : req.body.quantity,
-            barcode : validBarcode
+            barcode : validBarcode,
+            customerId : req.session.userId
 
         });
 

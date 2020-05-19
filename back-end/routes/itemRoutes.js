@@ -14,6 +14,7 @@ function requiresCustomer(req, res, next) {
 /*
  * GET
  */
+router.get('/', requiresCustomer, itemController.list);
 router.get('/addItem', requiresCustomer, itemController.showAddItem);
 
 /*
