@@ -52,9 +52,11 @@ module.exports = {
      * Preko te metode lahko samo admin dodaja nove paketnike
      */
     create: function (req, res) {
-        var mailbox = new mailboxModel({
+        const mailbox = new mailboxModel({
 			registrationId : req.body.registrationId,
 			unlockKey : req.body.unlockKey,
+            requireUnlock : false, // privzeto nihce ne zahteva odklep
+            isLocked: true // privzeto je paketnik zaklenjen
         });
 
         mailbox.save(function (err, mailbox) {
@@ -92,7 +94,7 @@ module.exports = {
                                 error: err
                             });
                         }
-                        return res.json("Uspesno ste registrirali vas paketnik");
+                        return res.status(201).json("Uspesno ste registrirali vas paketnik");
                     });
                 }
             });

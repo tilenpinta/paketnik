@@ -42,11 +42,11 @@ function requiresPrivilegedUser(req, res, next) {
     }
 }
 
-router.get('/', requiresCustomerOrAdmin, mailboxController.list);
+router.get('/', requiresPrivilegedUser, mailboxController.list);
 router.get('/addMailbox', requiresPrivilegedUser, mailboxController.showAddMailbox);
 router.get('/register', requiresCustomer, mailboxController.showRegistration);
 router.get('/token', requiresCourier, mailboxController.showInsertToken)
-router.get('/:id', requiresCustomerOrAdmin, mailboxController.show);
+router.get('/:id', requiresPrivilegedUser, mailboxController.show);
 
 
 //router.post('/', requiresPrivilegedUser, mailboxController.create); // TODO
@@ -54,7 +54,7 @@ router.post('/register',  requiresCustomer, mailboxController.register);
 /**
  * preko te metode bo dostavljalec zahteval, da uporabnik odklene paketnik
  */
-router.post('/token', requiresCourier, mailboxController.getToken)
+router.post('/token', requiresCourier, mailboxController.getToken); // TODO
 
 /*
  * PUT

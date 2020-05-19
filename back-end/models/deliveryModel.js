@@ -6,7 +6,6 @@ const deliverySchema = new Schema({
 	'packageOwnerId' : String, // id nasega
 	'items' : Array, // polje znotraj katerega bodo hranjeni id-ji od vseh itemov, ki bi naj prisli k uporabniku
 	'done' : Boolean, // ob oddaji narocila se nastavi na false
-	'unlocked' : Boolean // na zacetku je zaklenjeno (torej false). odklene se ko uporabnik dovoli
 });
 
 module.exports = mongoose.model('delivery', deliverySchema);

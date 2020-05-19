@@ -11,14 +11,14 @@ module.exports = {
      * deliveryController.list()
      */
     list: function (req, res) {
-        deliveryModel.find(function (err, deliverys) {
+        deliveryModel.find(function (err, deliveries) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting delivery.',
                     error: err
                 });
             }
-            return res.json(deliverys);
+            return res.json(deliveries);
         });
     },
 
@@ -52,8 +52,6 @@ module.exports = {
 			packageOwnerId : req.body.packageOwnerId,
 			items : req.body.items,
             done : false,
-			unlocked : req.body.unlocked
-
         });
 
         delivery.save(function (err, delivery) {
