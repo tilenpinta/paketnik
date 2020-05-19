@@ -22,6 +22,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/userRoutes');
+const itemRouter = require('./routes/itemRoutes');
 const photoRouter = require('./routes/photoRoutes');
 const mailboxRouter = require('./routes/mailboxRoutes');
 
@@ -71,6 +72,8 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/photos', photoRouter);
 app.use('/mailboxes', mailboxRouter);
+app.use('/items', itemRouter);
+
 app.set('json spaces', 1)
 
 // catch 404 and forward to error handler

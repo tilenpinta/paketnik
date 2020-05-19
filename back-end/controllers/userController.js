@@ -86,17 +86,17 @@ module.exports = {
     ,
     login: function (req, res,next) {
       userModel.authenticate(req.body.username, req.body.password, function (error, user) {
-      if (error || !user) {
-        let err = new Error('Wrong username or password.');
-        err.status = 401;
-        return next(err);
-      } else {
-        req.session.userId = user._id;
-        req.session.userAdmin = user.isAdmin;
-        console.log("Iz login za admina: " + req.session.userAdmin);
-         return res.status(201).json(user);
-      }
-    })
+          if (!(error || !user)) {
+              req.session.userId = user._id;
+              req.session.userAdmin = user.isAdmin;
+              req.session.typeOfUser = user.typeOfUser;
+              return res.status(201).json(user);
+          } else {
+              let err = new Error('Wrong username or password.');
+              err.status = 401;
+              return next(err);
+          }
+      })
     },
     /**
      * userController.login()
