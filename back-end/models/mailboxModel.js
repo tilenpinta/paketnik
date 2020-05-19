@@ -15,7 +15,7 @@ const mailboxSchema = new Schema({
  * @param callback v primeru, da so pogoji izpolnjeni, vrne nam paketnik za registracijo
  */
 mailboxSchema.statics.validation = (regId, callback) => {
-	console.log("From foo:" +regId);
+//	console.log("From foo:" +regId);
 	Mailbox.findOne({ registrationId: regId })
 		.exec(function (err, mailbox) {
 			if (err) {

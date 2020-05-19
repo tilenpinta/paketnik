@@ -88,16 +88,18 @@ module.exports = {
         return next(err);
       } else {
         req.session.userId = user._id;
+        console.log("Iz login: " + req.session.userId);
          return res.status(201).json(user);
       }
     })
-  },
+    },
     /**
      * userController.login()
      */
 
     logout: function (req, res,next) {
-       if (req.session) {
+        console.log("Iz logut: " + req.session.userId);
+   if (req.session)  {
     // delete session object
     req.session.destroy(function (err) {
       if (err) {
