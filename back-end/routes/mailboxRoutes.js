@@ -2,16 +2,6 @@ const express = require('express');
 const router = express.Router();
 const mailboxController = require('../controllers/mailboxController.js');
 
-function requiresCustomerOrAdmin(req, res, next) {
-    if (req.session && req.session.userId && (req.session.isOrdinaryUser || req.session.isAdmin) )  {
-        return next();
-    } else {
-        const err = new Error('Dostop ni dovoljen!');
-        err.status = 401;
-        return next(err);
-    }
-}
-
 function requiresCustomer (req, res, next) {
     if (req.session && req.session.userId && req.session.isOrdinaryUser)  {
         return next();
