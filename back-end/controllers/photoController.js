@@ -44,11 +44,7 @@ module.exports = {
         });
     },
 
-    /**
-     * photoController.create()
-     */
-    dodaj: function (req, res) {
-
+    dodaj: (req, res) => {
          res.render('photo/dodaj');
     },
     /**
@@ -56,7 +52,7 @@ module.exports = {
      * V nasportnem primeru pa doda sliko
      *
      */
-    create: function (req, res) {
+    create: (req, res) => {
         const id = req.session.userId;
         photoModel.alreadyExists(id,(error, image) =>{
            // if(error){
@@ -73,7 +69,7 @@ module.exports = {
                     ownerId: req.session.userId
                 });
 
-                photo.save(function (err, photo) {
+                photo.save( (err, photo) => {
                     if (err) {
                         return res.status(500).json({
                             message: 'Error when creating photo',
@@ -90,7 +86,7 @@ module.exports = {
                 image.views = req.body.views ? req.body.views : image.views;
                 image.likes = req.body.likes ? req.body.likes : image.likes;
 
-                image.save(function (err, image) {
+                image.save( (err, image) =>{
                     if (err) {
                         return res.status(500).json({
                             message: 'Error when updating photo.',
@@ -112,7 +108,7 @@ module.exports = {
     /**
      * photoController.update()
      */
-    update: function (req, res) {
+    update: (req, res) => {
         const id = req.params.id;
         photoModel.findOne({_id: id}, function (err, photo) {
             if (err) {

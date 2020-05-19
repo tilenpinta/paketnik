@@ -1,18 +1,18 @@
-var express = require('express');
-var router = express.Router();
-var photoController = require('../controllers/photoController.js');
+const express = require('express');
+const router = express.Router();
+const photoController = require('../controllers/photoController.js');
 
 //knjižnica, ki nam omogoča prejemanje datotek (multipart zahtev)
-var multer = require('multer');
+const multer = require('multer');
 //mesto, kam bomo prenašali datoteke
-var upload = multer({ dest: 'public/images/' });
+const upload = multer({ dest: 'public/images/' });
 
 function requiresLogin(req, res, next) {
-console.log("auth!");
+console.log("Avtentikacija!");
   if (req.session && req.session.userId) {
     return next();
   } else {
-    var err = new Error('You must be logged in to view this page.');
+    const err = new Error('You must be logged in to view this page.');
     err.status = 401;
     return next(err);
   }

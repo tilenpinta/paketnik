@@ -46,28 +46,86 @@ module.exports = {
     /**
      * Funkcija za registracijo uporabnika
      */
-    create: function (req, res) {
-        let userReq = new userModel({
-			email : req.body.email,
-			username : req.body.username,
-			password : req.body.password
+
+
+    /**const id = req.session.userId;
+     photoModel.alreadyExists(id,(error, image) =>{
+           // if(error){
+             //   let err = new Error("Id" + id);
+               // err.status = 401;
+                //return next(err);
+            //}
+             if(!image){
+                const photo = new photoModel({
+                    name: req.body.name,
+                    path: 'images/' + req.file.filename,
+                    views: req.body.views,
+                    likes: req.body.likes,
+                    ownerId: req.session.userId
+                });
+
+                photo.save( (err, photo) => {
+                    if (err) {
+                        return res.status(500).json({
+                            message: 'Error when creating photo',
+                            error: err
+                        });
+                    }
+                    return res.status(201).json(photo);
+                });
+            }
+            else if(image){
+                const newPath = 'images/' + req.file.filename;
+                image.name = req.body.name ? req.body.name : image.name;
+                image.path = req.body.path ? newPath : image.path;
+                image.views = req.body.views ? req.body.views : image.views;
+                image.likes = req.body.likes ? req.body.likes : image.likes;
+
+                image.save( (err, image) =>{
+                    if (err) {
+                        return res.status(500).json({
+                            message: 'Error when updating photo.',
+                            error: err
+                        });
+                    }
+
+                    return res.json(image);
+                });
+            }
+            else {
+                return res.json('Nepricakovana napaka');
+            }
 
         });
+     */
+    create: (req, res) => {
+        const userReq = new userModel({
+			email : req.body.email,
+			username : req.body.username,
+			password : req.body.password,
+            isAdmin: false
 
-        if(userModel.checkUser(userReq.username, userReq.email)) {
-            userReq.save( err => {
-                if (err) {
-                    return res.status(500).json({
-                        message: 'Error when creating user',
-                        error: err
-                    });
-                }
-                return res.status(201).json(userReq);
-            });
-        }
-        else{
-            return res.json("Fuck");
-        }
+        });
+        userModel.checkUser(userReq.username, userReq.email, (err, user) =>{
+           if(user){
+               return res.status(409).json("Uporabnik s tem e-naslovom ali uporabniskim imenom ze obstaja");
+           }
+           else if(!user){
+               userReq.save( err => {
+                   if (err) {
+                       return res.status(500).json({
+                           message: 'Error when creating user',
+                           error: err
+                       });
+                   }
+                   return res.status(201).json(userReq);
+               });
+           }
+           else {
+               return res.json("Fuck");
+           }
+        });
+
     },
     /**
      * userController.login()
@@ -151,7 +209,7 @@ module.exports = {
             user.email = req.body.email ? req.body.email : user.email;
 			user.username = req.body.username ? req.body.username : user.username;
 			user.password = req.body.password ? req.body.password : user.password;
-			
+			user.isAdmin = false;
             user.save(function (err, user) {
                 if (err) {
                     return res.status(500).json({

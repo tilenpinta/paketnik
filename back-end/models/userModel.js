@@ -5,15 +5,31 @@ const Schema   = mongoose.Schema;
 const userSchema = new Schema({
 	'email' : String,
 	'username' : String,
-	'password' : String
+	'password' : String,
+    'isAdmin' : Boolean
 });
+
+
+/**
+ * Preverimo če uporabnik ima administratorske pravice
+ */
+function requiresPrivilegedUser(req, res, next) {
+    console.log("Avtentikacija!");
+    if (req.session && req.session.userId) {
+        return next();
+    } else {
+        const err = new Error('You must be logged in to view this page.');
+        err.status = 401;
+        return next(err);
+    }
+}
 
 
 /**
  * Avtentikacija ob prijavi uporabnika
  *
  * @param username poišče uporabnika v PB po tem uporabniškem imenu
- * @param password preveri če se ta vnos ujema z vrednostjo v PB
+ * @param password preveri če se hash vrednost tega vnosa ujema z vrednostjo v PB
  * @param callback vrne nam uporabnika v primeru, da je avtentikacija bila uspešna
  */
 userSchema.statics.authenticate = function (username, password, callback) {
@@ -43,12 +59,18 @@ userSchema.statics.authenticate = function (username, password, callback) {
  * @param username poišče uporabnika v PB po tem uporabniškem imenu
  * @param email poišče uporabnika v PB po tem e-naslovu
  */
-userSchema.statics.checkUser = function (username, email) {
+userSchema.statics.checkUser = (username, email, callback) =>{
     User.findOne({$or: [{email: email},{username: username}]})
-        .exec(function (err, user) {
+        .exec( (err, user) => {
             if (err) {
-                return false;
-            } else return !user;
+                return callback(err);
+            } else if(!user){
+                let err = new Error('Not found');
+                err.status = 401;
+                return callback(err);
+            } else if(user){
+                callback(null, user);
+            }
         });
 }
 
