@@ -6,7 +6,7 @@ const userSchema = new Schema({
 	'email' : String,
 	'username' : String,
 	'password' : String,
-    'typeOfUser': String,
+    'isOrdinaryUser': Boolean,
     'isAdmin' : Boolean
 });
 

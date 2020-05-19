@@ -2,10 +2,8 @@ const express = require('express');
 const router = express.Router();
 const itemController = require('../controllers/itemController.js');
 
-
 function requiresCustomer(req, res, next) {
-    console.log("Tip uporabnika iz itemRoutes: " + req.session.typeOfUser);
-    if (req.session && req.session.userId && req.session.typeOfUser === 'uporabnik')  {
+    if (req.session && req.session.userId && req.session.isOrdinaryUser)  {
         return next();
     } else {
         const err = new Error('Dostop ni dovoljen!');

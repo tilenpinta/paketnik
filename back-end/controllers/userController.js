@@ -48,7 +48,7 @@ module.exports = {
 			email : req.body.email,
 			username : req.body.username,
 			password : req.body.password,
-            typeOfUser: 'uporabnik',
+            isOrdinaryUser: true,
             isAdmin: false
 
         });
@@ -89,7 +89,7 @@ module.exports = {
           if (!(error || !user)) {
               req.session.userId = user._id;
               req.session.userAdmin = user.isAdmin;
-              req.session.typeOfUser = user.typeOfUser;
+              req.session.isOrdinaryUser = user.isOrdinaryUser;
               return res.status(201).json(user);
           } else {
               let err = new Error('Wrong username or password.');
@@ -198,11 +198,17 @@ module.exports = {
 
     adminCreate: (req, res) => {
         console.log(req.body.racun);
+        let ordinaryUser = true;
+
+        if(req.body.racun.toString() !== 'uporabnik'){
+            ordinaryUser = false;
+        }
+
         const userReq = new userModel({
             email : req.body.email,
             username : req.body.username,
             password : req.body.password,
-            typeOfUser: req.body.racun,
+            isOrdinaryUser: ordinaryUser,
             isAdmin: false
 
         });
@@ -244,13 +250,20 @@ module.exports = {
         const id = req.body.user_id;
         console.log("Id od update uproabnika: " + id);
 
+        let ordinaryUser = true;
+
+        if(req.body.racun.toString() !== 'uporabnik'){
+            ordinaryUser = false;
+        }
+
         const setValues = {
             $set: {
                 email: req.body.email, username: req.body.username,
-                typeOfUser: req.body.racun, isAdmin: false
+                isOrdinaryUser: ordinaryUser, isAdmin: false
             }
         };
         const myquery = {_id: id};
+
         userModel.updateOne(myquery, setValues, (err, user) => {
             if (err) {
                 return res.status(500).json({
@@ -265,7 +278,6 @@ module.exports = {
             }else{
                 return res.status(201).json(user);
             }
-
         });
     }
 
