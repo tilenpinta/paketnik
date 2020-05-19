@@ -1,5 +1,5 @@
 const userModel = require('../models/userModel.js');
-
+const bcrypt = require('bcrypt');
 /**
  * userController.js
  *
@@ -43,66 +43,12 @@ module.exports = {
         });
     },
 
-    /**
-     * Funkcija za registracijo uporabnika
-     */
-
-
-    /**const id = req.session.userId;
-     photoModel.alreadyExists(id,(error, image) =>{
-           // if(error){
-             //   let err = new Error("Id" + id);
-               // err.status = 401;
-                //return next(err);
-            //}
-             if(!image){
-                const photo = new photoModel({
-                    name: req.body.name,
-                    path: 'images/' + req.file.filename,
-                    views: req.body.views,
-                    likes: req.body.likes,
-                    ownerId: req.session.userId
-                });
-
-                photo.save( (err, photo) => {
-                    if (err) {
-                        return res.status(500).json({
-                            message: 'Error when creating photo',
-                            error: err
-                        });
-                    }
-                    return res.status(201).json(photo);
-                });
-            }
-            else if(image){
-                const newPath = 'images/' + req.file.filename;
-                image.name = req.body.name ? req.body.name : image.name;
-                image.path = req.body.path ? newPath : image.path;
-                image.views = req.body.views ? req.body.views : image.views;
-                image.likes = req.body.likes ? req.body.likes : image.likes;
-
-                image.save( (err, image) =>{
-                    if (err) {
-                        return res.status(500).json({
-                            message: 'Error when updating photo.',
-                            error: err
-                        });
-                    }
-
-                    return res.json(image);
-                });
-            }
-            else {
-                return res.json('Nepricakovana napaka');
-            }
-
-        });
-     */
     create: (req, res) => {
         const userReq = new userModel({
 			email : req.body.email,
 			username : req.body.username,
 			password : req.body.password,
+            typeOfUser: 'uporabnik',
             isAdmin: false
 
         });
@@ -146,7 +92,8 @@ module.exports = {
         return next(err);
       } else {
         req.session.userId = user._id;
-        console.log("Iz login: " + req.session.userId);
+        req.session.userAdmin = user.isAdmin;
+        console.log("Iz login za admina: " + req.session.userAdmin);
          return res.status(201).json(user);
       }
     })
@@ -237,5 +184,89 @@ module.exports = {
             }
             return res.status(204).json();
         });
+    },
+
+    showAdminCreate: (req, res) => {
+        res.render('user/admin-create');
+    },
+    showAdminDelete: (req, res) => {
+        res.render('user/admin-delete');
+    },
+    showAdminUpdate: (req, res) => {
+        res.render('user/admin-update');
+    },
+
+    adminCreate: (req, res) => {
+        console.log(req.body.racun);
+        const userReq = new userModel({
+            email : req.body.email,
+            username : req.body.username,
+            password : req.body.password,
+            typeOfUser: req.body.racun,
+            isAdmin: false
+
+        });
+        userModel.checkUser(userReq.username, userReq.email, (err, user) =>{
+            if(user){
+                return res.status(409).json("Uporabnik s tem e-naslovom ali uporabniskim imenom ze obstaja");
+            }
+            else if(!user){
+                userReq.save( err => {
+                    if (err) {
+                        return res.status(500).json({
+                            message: 'Error when creating user',
+                            error: err
+                        });
+                    }
+                    return res.status(201).json(userReq);
+                });
+            }
+            else {
+                return res.redirect('../../users/admin-create');
+            }
+        });
+    },
+
+    adminDelete: (req, res) => {
+        const id = req.body.user_id;
+        userModel.deleteOne({_id: id}, err => {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when deleting the user.',
+                    error: err
+                });
+            }
+            return res.status(204).json();
+        });
+    },
+
+    adminUpdate: (req, res) => {
+        const id = req.body.user_id;
+        console.log("Id od update uproabnika: " + id);
+
+        const setValues = {
+            $set: {
+                email: req.body.email, username: req.body.username,
+                typeOfUser: req.body.racun, isAdmin: false
+            }
+        };
+        const myquery = {_id: id};
+        userModel.updateOne(myquery, setValues, (err, user) => {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting user',
+                    error: err
+                });
+            }
+            if (!user) {
+                return res.status(404).json({
+                    message: 'No such user'
+                });
+            }else{
+                return res.status(201).json(user);
+            }
+
+        });
     }
+
 };

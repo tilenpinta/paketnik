@@ -6,6 +6,7 @@ const userSchema = new Schema({
 	'email' : String,
 	'username' : String,
 	'password' : String,
+    'typeOfUser': String,
     'isAdmin' : Boolean
 });
 
@@ -13,17 +14,6 @@ const userSchema = new Schema({
 /**
  * Preverimo če uporabnik ima administratorske pravice
  */
-function requiresPrivilegedUser(req, res, next) {
-    console.log("Avtentikacija!");
-    if (req.session && req.session.userId) {
-        return next();
-    } else {
-        const err = new Error('You must be logged in to view this page.');
-        err.status = 401;
-        return next(err);
-    }
-}
-
 
 /**
  * Avtentikacija ob prijavi uporabnika
