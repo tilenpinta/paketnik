@@ -31,7 +31,8 @@ router.get('/:id', orderController.show);
  * POST
  */
 router.post('/placeOrder', requiresCustomer, orderController.create);
-router.post('/requireUnlock/:id/:orderId', requiresCourier, orderController.requireUnlock)
+router.post('/requireUnlock/:id/:orderId', requiresCourier, orderController.requireUnlock);
+router.post('/requireUnlock/:id/unlockWithToken/:orderId', requiresCourier, orderController.showUnlock);
 /*
  * PUT
  */

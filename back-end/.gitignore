@@ -8,7 +8,7 @@ config.js
 # dependencies
 /node_modules
 public/images
-
+public/audio
 # IDEs and editors
 /.idea
 .project

@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController.js');
+const multer = require('multer');
 
+const upload = multer({ dest: 'public/audios/' });
 
 /**
  * "Privileged user" je admin. Lastnost admina nastavimo preko PB.

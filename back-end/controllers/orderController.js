@@ -3,6 +3,9 @@ const itemModel = require('../models/itemModel.js');
 const userModel = require('../models/userModel.js');
 const mailboxModel = require('../models/mailboxModel.js');
 const tokenModel = require('../models/tokenModel.js');
+const fs = require('fs');
+const AdmZip = require('adm-zip');
+const player = require('node-wav-player');
 
 /**
  * orderController.js
@@ -162,6 +165,8 @@ module.exports = {
 
     requireUnlock : (req, res) => {
         const key = req.params.id;
+        const orderId = req.params.orderId;
+
         mailboxModel.findOne( { ownerId: key}, (err, mailbox) => {
             if(err){
                 return res.status(500).json({
@@ -169,9 +174,11 @@ module.exports = {
                     error: err
                 });
             } else {
-                if(mailbox.isLocked){
+                if(mailbox.isLocked) {
                 mailbox.requireUnlock = true;
-                mailbox.courierId = req.session.userId;
+                mailbox.orderId = orderId;
+
+                    mailbox.courierId = req.session.userId;
                 mailbox.save( err=> {
                     if (err) {
                         return res.status(500).json({
@@ -182,7 +189,6 @@ module.exports = {
                     return res.status(201).json('Zahteva za odklepanje je bila poslana');
                 });
                 } else{
-                    const orderId = req.params.orderId;
                     orderModel.findOne( {_id: orderId}, (err, foundOrder) => {
                         if(err){
                             return res.status(500).json({
@@ -190,14 +196,52 @@ module.exports = {
                                 error: err
                             });
                         } else {
+                            mailbox.isLocked = true;
+                            mailbox.orderId = '';
+                            mailbox.save( err=> {
+                                if (err) {
+                                    return res.status(500).json({
+                                        message: 'Error when updating mailbox.',
+                                        error: err
+                                    });
+                                }
+
+                                res.render('order/deliver-order', {order : foundOrder} );
+                            });
                             // najdemo po narocilu vse tokene, nato pa vidimo kateri je najnovejsi
 //                            tokenModel.find //TODO
-                            res.render('order/deliver-order', {order : foundOrder} );
+
                         }
                     })
                 }
             }
         })
 
+    },
+
+    showUnlock: (req, res) => {
+        const orderId = req.params.orderId;
+        tokenModel.find( { orderId: orderId}, (err, tokens) => {
+            if(err){
+                return res.status(500).json({
+                    message: 'Error when getting mailbox.',
+                    error: err
+                });
+            } else if(!tokens) {
+                return res.status(404).json({
+                    message: 'No such tokens'
+                });
+            } else {
+                let sorted = tokens.sort((a, b) => a.created - b.created);
+                const fileName = 'C:/RAI/paketnik/back-end' + sorted[sorted.length-1].crap.substring(1, sorted[sorted.length-1].crap.length) + '/token.wav';
+                console.log('filename' + fileName);
+                console.log('current dir: ' + __dirname);
+                res.render('order/play-token', { fileSource: fileName});
+
+
+            }
+
+          //  res.json('odklenje');
+        });
     }
 };

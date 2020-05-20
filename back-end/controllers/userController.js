@@ -1,7 +1,9 @@
 const userModel = require('../models/userModel.js');
 const mailboxModel = require('../models/mailboxModel.js');
 const tokenModel = require('../models/tokenModel.js');
-const request = require('request');
+const request = require('request')
+const AdmZip = require('adm-zip');
+
 const bcrypt = require('bcrypt');
 /**
  * userController.js
@@ -342,32 +344,44 @@ module.exports = {
                                 error: error
                             });
                         } else if (!error && response.statusCode === 200 && output.Result === 0) {
+                            const ourDate = Date.now();
+                            const fileSource = './public/audio/token' + ourDate + '.wav';
+                            const zipSource = './public/audio/token' + ourDate + '.zip';
+
                             const token = new tokenModel({
                                 base64String : output.Data,
-                                created : Date.now(),
-                                courierId : mailbox.courierId
+                                created : ourDate,
+                                courierId : mailbox.courierId,
+                                orderId: mailbox.orderId,
+                                crap : fileSource
                             });
+                            require("fs").writeFile(zipSource, output.Data, 'base64', function(err) {
+                                const zip = new AdmZip(zipSource);
+                                zip.extractAllTo(fileSource, true);
 
-                            token.save( (err, token) => {
-                                if (err) {
-                                    return res.status(500).json({
-                                        message: 'Error when creating token',
-                                        error: err
-                                    });
-                                }
-                                mailbox.requireUnlock = false;
-                                mailbox.isLocked = false;
-                                mailbox.courierId = '';
-                                mailbox.save( err => {
+                                token.save( (err, token) => {
                                     if (err) {
                                         return res.status(500).json({
-                                            message: 'Napaka',
+                                            message: 'Error when creating token',
                                             error: err
                                         });
                                     }
-                                    return res.status(201).json('Zeton je poslan');
+                                    mailbox.requireUnlock = false;
+                                    mailbox.isLocked = false;
+                                    mailbox.courierId = '';
+                                    mailbox.save( err => {
+                                        if (err) {
+                                            return res.status(500).json({
+                                                message: 'Napaka',
+                                                error: err
+                                            });
+                                        }
+                                        return res.status(201).json('Zeton je poslan');
+                                    });
                                 });
                             });
+
+
                         }
                         /**
                          * v primeru, da paket s tem id ne obstaja

@@ -1,4 +1,5 @@
 
+<p>Id narocila: </p>
 <div>
     <div class="row">
             <div class="col col-md-9">
@@ -9,8 +10,10 @@
                     {{#each this.order.items}}
                         <p>Izdelek z id: {{_id}}</p>
                     {{/each}}
-                <form action="unlockWithToken/{{_id}}" method="post">
-                        <input type="submit" value="Predvajaj zeton">
-                    </form>
+
+
             </div>
+        <form action="unlockWithToken/{{this.order._id}}" method="post">
+            <input type="submit" value="Predvajaj zeton">
+        </form>
         </div>

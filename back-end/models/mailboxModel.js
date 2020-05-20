@@ -8,6 +8,7 @@ const mailboxSchema = new Schema({
 	'courierId' : String,
 	'requireUnlock' : Boolean, // ko vpise id paketnika (000541), dostavljalec to nastavi na true
 	'isLocked': Boolean, // to je privzeto na true, lahko pa uporabnik spreminja
+	'orderId' : String,
 });
 
 /**
