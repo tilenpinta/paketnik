@@ -11,66 +11,39 @@ const itemSchema = new Schema({
 	'customerId': String
 });
 
-const toInt = function( numString ) {
-	return parseInt( numString, 10 );
-};
-const isOdd = function( num ) {
-	return (num % 2) === 1;
-}
-
 itemSchema.statics.generateBarcode = () => {
 	let barcode = '';
 	for (let i = 0; i < 12; i++ ) {
 		barcode += (Math.floor(Math.random() * 10)).toString();
-		console.log(barcode);
 	}
-
-	console.log("\n");
 
 	let sumEven = 0;
 	let sumOdd = 0;
 	let num = 0;
+	let sum = 0;
+	let lastDig;
 
-	for(let i = 0; i < 11; i++) {
-		num = parseInt(barcode);
+	for(let i = 0; i < 12; i++) {
+		num = parseInt(barcode.charAt(i));
+		if(i%2 === 1) {
+			sumEven = (num*3) + sumEven;
+		}
+		else {
+			sumOdd += num;
+		}
 	}
-	console.log(num);
-}
+	sum = sumEven + sumOdd;
 
-/*
-itemSchema.statics.generateBarcode = () => {
-	let barcode = '';
-	for (let i = 0; i < 13; i++ ) {
-		barcode += (Math.floor(Math.random() * 10)).toString();
-		console.log("barcode");
-		console.log(barcode);
-		console.log();
+	lastDig = 10 - (sum % 10);
+
+	if(lastDig === 10) {
+		lastDig = 0;
 	}
 
+	const newBarcode = barcode + lastDig.toString();
 
-	gtin = parseInt( barcode, 10 ).toString();
-	console.log(gtin);
-	let chunks = gtin.split('').map( toInt ).reverse();
-	console.log("\n" + chunks);
-	let checksum = 0;
-
-	// Remove first chuck (checksum)
-	chunks.shift();
-
-	console.log("\n" + chunks + "\n");
-
-	// sum numbers and multiply accordingly
-	chunks.forEach( (number, index) => {
-		checksum += isOdd(index) ? number : number*3;
-		console.log(checksum);
-	});
-	// calc checksum
-	checksum %= 10;
-	checksum = (checksum === 0) ? 0 : (10 - checksum);
-	const newBarcode = barcode + checksum.toString();
 	return newBarcode;
 }
-*/
 
 const Item = mongoose.model('Item', itemSchema);
 
