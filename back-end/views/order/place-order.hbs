@@ -1,0 +1,17 @@
+<div
+{{#each this.order}}
+        <div class="row">
+            <div class="col col-md-9">
+                <p>Izdelek: {{name}} </p>
+                <p>Kolicina: {{quantiy}} </p>
+
+                <p>Teza: {{weight}} </p>
+                <p>Črtna koda: {{barcode}} </p>
+
+            </div>
+        </div>
+{{/each}}
+
+<form action="placeOrder/" method="post">
+    <input type="submit" value="Oddaj narocilo">
+</form>

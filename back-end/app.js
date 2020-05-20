@@ -21,6 +21,7 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const indexRouter = require('./routes/index');
+const orderRouter = require('./routes/orderRoutes');
 const usersRouter = require('./routes/userRoutes');
 const itemRouter = require('./routes/itemRoutes');
 const photoRouter = require('./routes/photoRoutes');
@@ -73,6 +74,7 @@ app.use('/users', usersRouter);
 app.use('/photos', photoRouter);
 app.use('/mailboxes', mailboxRouter);
 app.use('/items', itemRouter);
+app.use('/orders', orderRouter);
 
 app.set('json spaces', 1)
 
