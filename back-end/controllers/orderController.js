@@ -142,9 +142,7 @@ module.exports = {
         });
     },
     showUndeliveredOrders : (req, res) => {
-        console.log(req.session.userId)
         orderModel.find( {courierId : req.session.userId}, (err, orders) => {
-            console.log(orders);
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting items.',
@@ -152,6 +150,7 @@ module.exports = {
                 });
             }
             else if(orders){
+                
                 res.render('order/undelivered-orders', {order: orders})
             }
             else {
