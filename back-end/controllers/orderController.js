@@ -1,7 +1,7 @@
 const orderModel = require('../models/orderModel.js');
 const itemModel = require('../models/itemModel.js');
 const userModel = require('../models/userModel.js');
-
+const mailboxModel = require('../models/mailboxModel.js');
 /**
  * orderController.js
  *
@@ -148,15 +148,38 @@ module.exports = {
                     message: 'Error when getting items.',
                     error: err
                 });
-            }
-            else if(orders){
-                
+            } else if(orders){
                 res.render('order/undelivered-orders', {order: orders})
-            }
-            else {
+            } else {
+
                 return res.status(404).json('Trenutno ni nedostavljenih narocil');
             }
         });
+
+    },
+
+    requireUnlock : (req, res) => {
+        const owner = req.params.id;
+        mailboxModel.findOne( { ownerId: owner}, (err, mailbox) => {
+            if(err){
+                return res.status(500).json({
+                    message: 'Error when getting mailbox.',
+                    error: err
+                });
+            } else {
+                mailbox.requireUnlock = true;
+                mailbox.save(function (err, order) {
+                    if (err) {
+                        return res.status(500).json({
+                            message: 'Error when updating mailbox.',
+                            error: err
+                        });
+                    }
+                    return res.json(mailbox);
+                });
+
+            }
+        })
 
     }
 };

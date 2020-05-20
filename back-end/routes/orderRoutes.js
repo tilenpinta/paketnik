@@ -25,17 +25,13 @@ function requiresCourier (req, res, next) {
 
 router.get('/checkForUndeliveredOrders', requiresCourier, orderController.showUndeliveredOrders);
 router.get('/placeOrder', requiresCustomer, orderController.list);
-
-/*
- * GET
- */
 router.get('/:id', orderController.show);
 
 /*
  * POST
  */
 router.post('/placeOrder', requiresCustomer, orderController.create);
-
+router.post('/requireUnlock/:id', requiresCourier, orderController.requireUnlock)
 /*
  * PUT
  */
