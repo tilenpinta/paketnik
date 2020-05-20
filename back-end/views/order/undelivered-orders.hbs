@@ -1,0 +1,19 @@
+<div>
+{{#each this.order}}
+    <div class="row">
+        <div class="col col-md-9">
+            <p>Id uporabnika: {{customerId}} </p>
+            <p>Id dostavljalca: {{courierId}} </p>
+            <p>Datum: {{orderDate}} </p>
+            <p>Artikli: </p>
+            {{#if isDelivered}}
+                <p>Dostavljeno</p>
+            {{else}}
+                <form action="deliver/" method="post">
+                    <input type="submit" value="Dostavi">
+                </form>
+            {{/if}}
+        </div>
+    </div>
+
+{{/each}}

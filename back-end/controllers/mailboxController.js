@@ -34,8 +34,7 @@ module.exports = {
                     message: 'Error when getting mailbox.',
                     error: err
                 });
-            }
-            if (!mailboxes) {
+            } else if (!mailboxes) {
                 return res.status(404).json({
                     message: 'No such mailbox...'
                 });

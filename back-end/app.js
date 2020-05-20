@@ -6,6 +6,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
+require('events').EventEmitter.prototype._maxListeners = 100;
 
 
 //povezava z bazo

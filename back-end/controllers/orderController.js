@@ -1,5 +1,7 @@
 const orderModel = require('../models/orderModel.js');
 const itemModel = require('../models/itemModel.js');
+const userModel = require('../models/userModel.js');
+
 /**
  * orderController.js
  *
@@ -47,37 +49,44 @@ module.exports = {
      * orderController.create()
      */
     create: function (req, res) {
-        let order = new orderModel({
-			customerId : req.session.userId,
-			orderDate : Date.now(),
-			isDelivered : false,
-			items : []
-
-        });
-
-        itemModel.find( {customerId: req.session.userId }, (err, orderedItems) => {
+        userModel.findOne({$and: [ {isOrdinaryUser: false}, {isAdmin: false}]}, (err, courier) => {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting items.',
                     error: err
                 });
-            }
-            if(orderedItems.length === 0){
-                return res.status(404).json({
-                   message: 'Items not found',
+            } else{
+                itemModel.find( {customerId: req.session.userId }, (err, orderedItems) => {
+                    if (err) {
+                        return res.status(500).json({
+                            message: 'Error when getting items.',
+                            error: err
+                        });
+                    } else if(orderedItems.length === 0){
+                        return res.status(404).json({
+                            message: 'Items not found',
+                        });
+                    } else {
+                        let order = new orderModel({
+                            customerId: req.session.userId,
+                            courierId: courier._id,
+                            orderDate: Date.now(),
+                            isDelivered: false,
+                            items: []
+                        });
+                        orderedItems.forEach(element => order.items.push(element._id));
+                        order.save(function (err, order) {
+                            if (err) {
+                                return res.status(500).json({
+                                    message: 'Error when creating order',
+                                    error: err
+                                });
+                            }
+                            return res.status(201).json(order);
+                        });
+                    }
                 });
             }
-            orderedItems.forEach( element => order.items.push(element._id) );
-        });
-
-        order.save(function (err, order) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when creating order',
-                    error: err
-                });
-            }
-            return res.status(201).json(order);
         });
     },
 
@@ -85,7 +94,7 @@ module.exports = {
      * orderController.update()
      */
     update: function (req, res) {
-        var id = req.params.id;
+        const id = req.params.id;
         orderModel.findOne({_id: id}, function (err, order) {
             if (err) {
                 return res.status(500).json({
@@ -121,7 +130,7 @@ module.exports = {
      * orderController.remove()
      */
     remove: function (req, res) {
-        var id = req.params.id;
+        const id = req.params.id;
         orderModel.findByIdAndRemove(id, function (err, order) {
             if (err) {
                 return res.status(500).json({
@@ -131,5 +140,24 @@ module.exports = {
             }
             return res.status(204).json();
         });
+    },
+    showUndeliveredOrders : (req, res) => {
+        console.log(req.session.userId)
+        orderModel.find( {courierId : req.session.userId}, (err, orders) => {
+            console.log(orders);
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting items.',
+                    error: err
+                });
+            }
+            else if(orders){
+                res.render('order/undelivered-orders', {order: orders})
+            }
+            else {
+                return res.status(404).json('Trenutno ni nedostavljenih narocil');
+            }
+        });
+
     }
 };

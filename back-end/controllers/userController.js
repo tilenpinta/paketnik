@@ -48,6 +48,7 @@ module.exports = {
 			email : req.body.email,
 			username : req.body.username,
 			password : req.body.password,
+            items : [],
             isOrdinaryUser: true,
             isAdmin: false
 
@@ -82,21 +83,21 @@ module.exports = {
     ,
     showRegister: function (req, res) {
         res.render('user/register');
-    }
-    ,
+    },
+
     login: function (req, res,next) {
-      userModel.authenticate(req.body.username, req.body.password, function (error, user) {
-          if (!(error || !user)) {
-              req.session.userId = user._id;
-              req.session.userAdmin = user.isAdmin;
-              req.session.isOrdinaryUser = user.isOrdinaryUser;
-              return res.status(201).json(user);
-          } else {
-              let err = new Error('Wrong username or password.');
-              err.status = 401;
-              return next(err);
-          }
-      })
+        userModel.authenticate(req.body.username, req.body.password, function (error, user) {
+            if (!(error || !user)) {
+                req.session.userId = user._id;
+                req.session.userAdmin = user.isAdmin;
+                req.session.isOrdinaryUser = user.isOrdinaryUser;
+                return res.status(201).json(user);
+            } else {
+                let err = new Error('Wrong username or password.');
+                err.status = 401;
+                return next(err);
+            }
+        })
     },
     /**
      * userController.login()
@@ -104,37 +105,37 @@ module.exports = {
 
     logout: function (req, res,next) {
         console.log("Iz logut: " + req.session.userId);
-   if (req.session)  {
-    // delete session object
-    req.session.destroy(function (err) {
-      if (err) {
-        return next(err);
-      } else {
-        return res.status(200);
-      }
-    });
-    }
-  },
+        if (req.session) {
+            // delete session object
+            req.session.destroy(function (err) {
+                if (err) {
+                    return next(err);
+                } else {
+                    return res.status(200);
+                }
+            });
+        }
+    },
         /**
      * userController.profil()
      */
 
     profile: function (req, res,next) {
-      userModel.findById(req.session.userId)
-    .exec(function (error, user) {
-      if (error) {
-        return next(error);
-      } else {
-        if (user === null) {
-          let err = new Error('Not authorized! Go back!');
-          err.status = 400;
-          return next(err);
-        } else {
-          res.render('user/profile', user);
-        }
-      }
-    });
-  },
+            userModel.findById(req.session.userId)
+                .exec(function (error, user) {
+                    if (error) {
+                        return next(error);
+                    } else {
+                        if (user === null) {
+                            let err = new Error('Not authorized! Go back!');
+                            err.status = 400;
+                            return next(err);
+                        } else {
+                            res.render('user/profile', user);
+                        }
+                    }
+                });
+        },
     /**
      * userController.update()
      */
