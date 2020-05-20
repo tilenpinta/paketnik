@@ -182,7 +182,7 @@ module.exports = {
                     return res.status(201).json('Zahteva za odklepanje je bila poslana');
                 });
                 } else{
-                    const orderId = req.params.orderId; //TODO
+                    const orderId = req.params.orderId;
                     orderModel.findOne( {_id: orderId}, (err, foundOrder) => {
                         if(err){
                             return res.status(500).json({
@@ -190,8 +190,9 @@ module.exports = {
                                 error: err
                             });
                         } else {
-                            tokenModel.find
-                            res.render('order/deliver-order', {order : foundOrder}, {tokenId: tokenid} );
+                            // najdemo po narocilu vse tokene, nato pa vidimo kateri je najnovejsi
+//                            tokenModel.find //TODO
+                            res.render('order/deliver-order', {order : foundOrder} );
                         }
                     })
                 }
