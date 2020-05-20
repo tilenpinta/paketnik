@@ -9,7 +9,7 @@
             {{#if isDelivered}}
                 <p>Dostavljeno</p>
             {{else}}
-                <form action="requireUnlock/{{customerId}}" method="post">
+                <form action="requireUnlock/{{customerId}}/{{_id}}" method="post">
                     <input type="submit" value="Zahtevaj odklepanje">
                 </form>
             {{/if}}

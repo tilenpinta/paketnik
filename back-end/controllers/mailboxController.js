@@ -1,4 +1,5 @@
 const mailboxModel = require('../models/mailboxModel.js');
+const tokenModel = require('../models/tokenModel.js');
 const request = require('request');
 
 /**
@@ -50,7 +51,7 @@ module.exports = {
     /**
      * Preko te metode lahko samo admin dodaja nove paketnike
      */
-    create: function (req, res) {
+    create: function (req, res) { // TODO
         const mailbox = new mailboxModel({
 			registrationId : req.body.registrationId,
 			unlockKey : req.body.unlockKey,
@@ -106,41 +107,7 @@ module.exports = {
     showInsertToken: (req, res) => {
         res.render('mailbox/insert-token');
     },
-    /**
-     * Pokliče se api od direct4.me za pridobitev žetona
-     * @param req
-     * @param res
-     * @return json, ki ima samo base64String za .wav datoteko, ki se bo predvajala
-     */
-    getToken: (req,res) => {
-        const urlString = 'http://api-test.direct4.me/Sandbox/PublicAccess/V1/api/access/OpenBox?boxID='
-            + req.body.mailboxId + '&tokenFormat=2';
 
-        request.post(urlString,  (error, response) => {
-           let output = JSON.parse(response.body);
-           /**
-            * v primeru, da je paket najden, api nam vrne json odgovor, ki vsebuje
-            * base64String za .wav datoteko
-            */
-            if (!error && response.statusCode === 200 && output.Result === 0) {
-                //let keyNames = Object.keys(output);
-               console.log(output);
-                return res.json(output.Data);
-            }
-            /**
-             * v primeru, da paket s tem id ne obstaja
-             */
-            else if(!error && response.statusCode === 200 && output.Result === 10009) {
-                return res.json(output.Message);
-            }
-            else if(!error && response.statusCode === 200 && output.Result !== 0 && output.Result !== 10009) {
-                return res.json(output.Message);
-            }
-            else {
-                return res.json('Ouch, nekaj je šlo narobe');
-            }
-        });
-    },
     /**
      * mailboxController.update()
      */

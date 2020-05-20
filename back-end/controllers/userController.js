@@ -1,4 +1,7 @@
 const userModel = require('../models/userModel.js');
+const mailboxModel = require('../models/mailboxModel.js');
+const tokenModel = require('../models/tokenModel.js');
+const request = require('request');
 const bcrypt = require('bcrypt');
 /**
  * userController.js
@@ -280,6 +283,112 @@ module.exports = {
                 return res.status(201).json(user);
             }
         });
-    }
+    },
 
+    showNotifications: (req, res) => {
+        mailboxModel.findOne( {ownerId : req.session.userId}, (err, mailbox) => {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting mailbox',
+                    error: err
+                });
+            } else if (!mailbox){
+                return res.status(404).json({
+                    message: 'Prosimo registrirajte vas paketnik',
+                    error: err
+                });
+            } else if(mailbox){
+                res.render('user/notifications', {box: mailbox});
+            } else{
+                return res.status(500).json({
+                    message: 'Ooops nekaj je slo narobe',
+                    error: err
+                });
+            }
+
+        });
+    },
+
+    /**
+     * preprosta metoda za odklepanje nabiralnika
+     */
+    unlockMailbox: (req, res) => {
+        const id = req.params.id;
+        mailboxModel.findOne( {unlockKey: id},  (err, mailbox) => {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting mailbox',
+                    error: err
+                });
+            } else if (!mailbox){
+                return res.status(404).json({
+                    message: 'Prosimo registrirajte vas paketnik',
+                    error: err
+                });
+            } else if(mailbox){
+                if(mailbox.requireUnlock){
+                    const urlString = 'http://api-test.direct4.me/Sandbox/PublicAccess/V1/api/access/OpenBox?boxID='
+                        + mailbox.unlockKey + '&tokenFormat=2';
+
+                    request.post(urlString,  (error, response) => {
+                        let output = JSON.parse(response.body);
+                        /**
+                         * v primeru, da je paket najden, api nam vrne json odgovor, ki vsebuje
+                         * base64String za .wav datoteko
+                         */
+                        if (error) {
+                            return res.status(500).json({
+                                message: 'Napaka pri zahtevi',
+                                error: error
+                            });
+                        } else if (!error && response.statusCode === 200 && output.Result === 0) {
+                            const token = new tokenModel({
+                                base64String : output.Data,
+                                created : Date.now(),
+                                courierId : mailbox.courierId
+                            });
+
+                            token.save( (err, token) => {
+                                if (err) {
+                                    return res.status(500).json({
+                                        message: 'Error when creating token',
+                                        error: err
+                                    });
+                                }
+                                mailbox.requireUnlock = false;
+                                mailbox.isLocked = false;
+                                mailbox.courierId = '';
+                                mailbox.save( err => {
+                                    if (err) {
+                                        return res.status(500).json({
+                                            message: 'Napaka',
+                                            error: err
+                                        });
+                                    }
+                                    return res.status(201).json('Zeton je poslan');
+                                });
+                            });
+                        }
+                        /**
+                         * v primeru, da paket s tem id ne obstaja
+                         */
+                        else if(!error && response.statusCode === 200 && output.Result === 10009) {
+                            return res.status(404).json({
+                                message: 'Paketnik ni najden'
+                            });
+                        } else if(!error && response.statusCode === 200 && output.Result !== 0 && output.Result !== 10009) {
+                            return res.status(404).json({
+                                message: output.Message
+                            });
+                        }  else {
+                            return res.status(500).json({
+                                message: 'Nepricakovana napaka',
+                                error: err
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    }
 };

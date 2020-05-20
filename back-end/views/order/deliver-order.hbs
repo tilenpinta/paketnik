@@ -1,0 +1,16 @@
+
+<div>
+    <div class="row">
+            <div class="col col-md-9">
+                <p>Id uporabnika: {{this.order.customerId}} </p>
+                <p>Id dostavljalca: {{this.order.courierId}} </p>
+                <p>Datum: {{this.order.orderDate}} </p>
+                <p>Artikli: </p>
+                    {{#each this.order.items}}
+                        <p>Izdelek z id: {{_id}}</p>
+                    {{/each}}
+                <form action="unlockWithToken/{{_id}}" method="post">
+                        <input type="submit" value="Predvajaj zeton">
+                    </form>
+            </div>
+        </div>
