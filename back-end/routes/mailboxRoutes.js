@@ -44,7 +44,6 @@ router.post('/register',  requiresCustomer, mailboxController.register);
 /**
  * preko te metode bo dostavljalec zahteval, da uporabnik odklene paketnik
  */
-router.post('/token', requiresCourier, mailboxController.getToken); // TODO
 
 /*
  * PUT

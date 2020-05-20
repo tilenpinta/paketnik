@@ -2,6 +2,8 @@ const orderModel = require('../models/orderModel.js');
 const itemModel = require('../models/itemModel.js');
 const userModel = require('../models/userModel.js');
 const mailboxModel = require('../models/mailboxModel.js');
+const tokenModel = require('../models/tokenModel.js');
+
 /**
  * orderController.js
  *
@@ -159,25 +161,40 @@ module.exports = {
     },
 
     requireUnlock : (req, res) => {
-        const owner = req.params.id;
-        mailboxModel.findOne( { ownerId: owner}, (err, mailbox) => {
+        const key = req.params.id;
+        mailboxModel.findOne( { ownerId: key}, (err, mailbox) => {
             if(err){
                 return res.status(500).json({
                     message: 'Error when getting mailbox.',
                     error: err
                 });
             } else {
+                if(mailbox.isLocked){
                 mailbox.requireUnlock = true;
-                mailbox.save(function (err, order) {
+                mailbox.courierId = req.session.userId;
+                mailbox.save( err=> {
                     if (err) {
                         return res.status(500).json({
                             message: 'Error when updating mailbox.',
                             error: err
                         });
                     }
-                    return res.json(mailbox);
+                    return res.status(201).json('Zahteva za odklepanje je bila poslana');
                 });
-
+                } else{
+                    const orderId = req.params.orderId; //TODO
+                    orderModel.findOne( {_id: orderId}, (err, foundOrder) => {
+                        if(err){
+                            return res.status(500).json({
+                                message: 'Error when getting order.',
+                                error: err
+                            });
+                        } else {
+                            tokenModel.find
+                            res.render('order/deliver-order', {order : foundOrder}, {tokenId: tokenid} );
+                        }
+                    })
+                }
             }
         })
 

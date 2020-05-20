@@ -1,1 +1,7 @@
-<p>Dela</p>
+<p>Identifikacijska stevilka paketnika: {{this.box.unlockKey}}</p>
+{{#if this.box.requireUnlock}}
+    <form action="unlockMailbox/{{this.box.unlockKey}}" method="post">
+        <input type="submit" value="Odkleni">
+    </form>
+{{else}}
+{{/if}}
