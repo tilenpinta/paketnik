@@ -51,7 +51,7 @@ module.exports = {
     /**
      * Preko te metode lahko samo admin dodaja nove paketnike
      */
-    create: function (req, res) { // TODO
+    create: function (req, res) {
         const mailbox = new mailboxModel({
 			registrationId : req.body.registrationId,
 			unlockKey : req.body.unlockKey,

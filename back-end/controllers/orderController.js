@@ -208,8 +208,6 @@ module.exports = {
 
                                 res.render('order/deliver-order', {order : foundOrder} );
                             });
-                            // najdemo po narocilu vse tokene, nato pa vidimo kateri je najnovejsi
-//                            tokenModel.find //TODO
 
                         }
                     })
