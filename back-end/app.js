@@ -51,7 +51,6 @@ app.use(cors({
   }
 }));
 
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
@@ -63,6 +62,11 @@ app.use(session({
   resave: true,
   saveUninitialized: false
 }));
+
+app.use( (req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});
 
 app.use(logger('dev'));
 app.use(express.json());

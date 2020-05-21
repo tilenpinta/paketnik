@@ -208,8 +208,6 @@ module.exports = {
 
                                 res.render('order/deliver-order', {order : foundOrder} );
                             });
-                            // najdemo po narocilu vse tokene, nato pa vidimo kateri je najnovejsi
-//                            tokenModel.find //TODO
 
                         }
                     })
@@ -233,9 +231,9 @@ module.exports = {
                 });
             } else {
                 let sorted = tokens.sort((a, b) => a.created - b.created);
-                const fileName = 'C:/RAI/paketnik/back-end' + sorted[sorted.length-1].crap.substring(1, sorted[sorted.length-1].crap.length) + '/token.wav';
+                const path = sorted[sorted.length-1].crap;
+                const fileName = path.substring(8, path.length) + '/token.wav';
                 console.log('filename' + fileName);
-                console.log('current dir: ' + __dirname);
                 res.render('order/play-token', { fileSource: fileName});
 
 
