@@ -109,7 +109,6 @@ module.exports = {
      */
 
     logout: function (req, res,next) {
-        console.log("Iz logut: " + req.session.userId);
         if (req.session) {
             // delete session object
             req.session.destroy(function (err) {
