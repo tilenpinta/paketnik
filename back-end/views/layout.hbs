@@ -5,7 +5,11 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-
+  {{#if session.userId}}
+      <p>Prijavljen</p>
+  {{else}}
+      <p>To, to pa je drek</p>
+  {{/if}}
   {{{body}}}
   </body>
 </html>

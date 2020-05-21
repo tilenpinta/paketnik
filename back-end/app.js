@@ -63,6 +63,11 @@ app.use(session({
   saveUninitialized: false
 }));
 
+app.use( (req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
