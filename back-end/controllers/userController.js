@@ -117,7 +117,7 @@ module.exports = {
                     return next(err);
                 } else {
                     res.status(200);
-                    res.render('user/login');
+                    res.redirect('/');
                 }
             });
         }
