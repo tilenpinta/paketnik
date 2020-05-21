@@ -116,7 +116,8 @@ module.exports = {
                 if (err) {
                     return next(err);
                 } else {
-                    return res.status(200);
+                    res.status(200);
+                    res.render('user/login');
                 }
             });
         }

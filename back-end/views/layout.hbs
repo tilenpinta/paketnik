@@ -30,12 +30,12 @@
         <ul class="navbar-nav ml-auto">
           {{#if session.userId}}
             <li class="nav-item">
-              <a class="nav-link" href="../users/register"><i class="fas fa-user"></i> Registracija</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link"><i class="fas fa-sign-out-alt"></i> Odjava</a>
+              <a class="nav-link" href="../users/logout"><i class="fas fa-sign-out-alt"></i> Odjava</a>
             </li>
           {{else}}
+            <li class="nav-item">
+              <a class="nav-link" href="../users/register"><i class="fas fa-user"></i> Registracija</a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="../users/login"><i class="fas fa-sign-in-alt"></i> Prijava</a>
             </li>

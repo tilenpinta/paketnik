@@ -38,12 +38,12 @@ router.get('/adminUpdate', requiresPrivilegedUser, userController.showAdminUpdat
 router.get('/notifications', requiresCustomer, userController.showNotifications);
 router.get('/register', userController.showRegister);
 router.get('/profile', userController.profile);
-//router.get('/logout', userController.logout);  // TODO
+router.get('/logout', userController.logout);
 router.get('/:id', userController.show);
 
 router.post('/', userController.create);
 router.post('/login', userController.login);
-//router.post('/logout', userController.logout); // TODO
+router.post('/logout', userController.logout);
 router.post('/createNewUser', requiresPrivilegedUser, userController.adminCreate);
 router.post('/deleteUser', requiresPrivilegedUser, userController.adminDelete);
 router.post('/updateUser', requiresPrivilegedUser, userController.adminUpdate);
