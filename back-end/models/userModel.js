@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const Schema   = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-	'email' : String,
-	'username' : String,
-	'password' : String,
-    'items' : Array,
-    'isOrdinaryUser': Boolean,
-    'isAdmin' : Boolean
+  'email': String,
+  'username': String,
+  'password': String,
+  'items': Array,
+  'isOrdinaryUser': Boolean,
+  'isAdmin': Boolean
 });
 
 
@@ -50,19 +50,19 @@ userSchema.statics.authenticate = function (username, password, callback) {
  * @param username poišče uporabnika v PB po tem uporabniškem imenu
  * @param email poišče uporabnika v PB po tem e-naslovu
  */
-userSchema.statics.checkUser = (username, email, callback) =>{
-    User.findOne({$or: [{email: email},{username: username}]})
-        .exec( (err, user) => {
-            if (err) {
-                return callback(err);
-            } else if(!user){
-                let err = new Error('Not found');
-                err.status = 401;
-                return callback(err);
-            } else if(user){
-                callback(null, user);
-            }
-        });
+userSchema.statics.checkUser = (username, email, callback) => {
+  User.findOne({ $or: [{ email: email }, { username: username }] })
+    .exec((err, user) => {
+      if (err) {
+        return callback(err);
+      } else if (!user) {
+        let err = new Error('Not found');
+        err.status = 401;
+        return callback(err);
+      } else if (user) {
+        callback(null, user);
+      }
+    });
 }
 
 /**

@@ -2,3 +2,8 @@
     <source src="{{this.fileSource}}" type="audio/mpeg">
     Your browser does not support the audio element.
 </audio>
+
+<p>OrderId: this.currentOrderId</p>
+<form action="/orders/deliver/{{this.currentOrderId}}" method="post">
+    <input type="submit" value="Koncaj dostavo">
+</form>
