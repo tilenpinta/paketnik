@@ -23,7 +23,7 @@ function requiresCourier(req, res, next) {
 }
 
 function requiresPrivilegedUser(req, res, next) {
-    if (req.session && req.session.userId && req.session.isAdmin)  {
+    if (req.session && req.session.userId && req.session.userAdmin)  {
         return next();
     } else {
         const err = new Error('Dostop ni dovoljen!');
