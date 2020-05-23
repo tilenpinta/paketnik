@@ -9,6 +9,10 @@
       src="https://kit.fontawesome.com/4e85d659ba.js"
       crossorigin="anonymous"
     ></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -19,27 +23,61 @@
           <li class="nav-item active">
             <a class="nav-link" href="../">DOMOV <span class="sr-only">(current)</span></a>
           </li>
+          {{#if session.userId}}
           <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
+            <a class="nav-link" href="../users/profile">Profil</a>
           </li>
+          {{/if}}
+          {{#if session.isOrdinaryUser}}
           <li class="nav-item">
-            <a class="nav-link disabled" href="#">Disabled</a>
+            <a class="nav-link" href="../users/notifications">Obvestilo</a>
           </li>
+          {{/if}}
+          {{#if session.userId}}
+            {{#if session.userAdmin}}
+            <li class="nav-item">
+                <a class="nav-link" href="../../mailboxes/addMailbox">Ustvari Nabiralnik</a>
+            </li>
+            {{/if}}
+            {{#if session.isOrdinaryUser}}
+            <li class="nav-item">
+                <a class="nav-link" href="../../mailboxes/register">Registriraj Nabiralnik</a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+                <a class="nav-link" href="../../mailboxes/token">TOKEN</a>
+            </li>
+            {{/if}}
+          {{/if}}
         </ul>
-
         <ul class="navbar-nav ml-auto">
+          {{#if session.userAdmin}}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-users-cog"></i> ADMIN
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="nav-link" href="../users/adminCreate"><i class="fas fa-user-plus"></i> Ustvari</a>
+              <a class="nav-link" href="../users/adminUpdate"><i class="fas fa-user-cog"></i> Posodobi</a>
+              <div class="dropdown-divider"></div>
+              <a class="nav-link" href="../users/adminDelete"><i class="fas fa-user-times"></i> Izbriši</a>
+            </div>
+          </li>
+          {{/if}}
           {{#if session.userId}}
             <li class="nav-item">
-              <a class="nav-link" href="../users/logout"><i class="fas fa-sign-out-alt"></i> Odjava</a>
+              <a class="nav-link" href="../../users/logout"><i class="fas fa-sign-out-alt"></i> Odjava</a>
             </li>
           {{else}}
             <li class="nav-item">
-              <a class="nav-link" href="../users/register"><i class="fas fa-user"></i> Registracija</a>
+              <a class="nav-link" href="../../users/register"><i class="fas fa-user"></i> Registracija</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../users/login"><i class="fas fa-sign-in-alt"></i> Prijava</a>
+              <a class="nav-link" href="../../users/login"><i class="fas fa-sign-in-alt"></i> Prijava</a>
             </li>
           {{/if}}
+
+            
         </ul>
       </div>
     </nav>
