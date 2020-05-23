@@ -1,15 +1,36 @@
-<h1>Ustvari profil</h1>
+<h1>Ustvari profil</h1><hr>
 <form action="createNewUser" method="post">
-    <input type="text" name="email" placeholder="E-mail" required="">
-    <input type="text" name="username" placeholder="Username" required="">
-    <input type="password" name="password" placeholder="Password" required="">
-    <label for="cars">Izberi tip racuna:</label>
-    <select id="racun" name="racun">
-        <option value="uporabnik">Lasstnik paketnika</option>
-        <option value="dostavljalec">Dostavljalec</option>
-    </select>
+    <div class="form-group row">
+		<label for="email" class="col-sm-2 col-form-label">E-mail: </label>
+		<div class="col-sm-10">
+            <input type="text" class="form-control" id="email" name="email" placeholder="E-mail" required="">
+     </div>
+    </div>
+    <div class="form-group row">
+		<label for="username" class="col-sm-2 col-form-label">Uporabniško: </label>
+		<div class="col-sm-10">
+	        <input type="text" class="form-control" id="username" name="username" placeholder="Username" required="">
+    </div>
+    </div>
+    <div class="form-group row">
+		<label for="password" class="col-sm-2 col-form-label">Geslo: </label>
+		<div class="col-sm-10">
+	        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required="">
+        </div>
+    </div>
+    <div class="form-group row">  
+        <label class="col-sm-2 col-form-label" for="racun">Izberi tip racuna:</label>
+        <select class="col-sm-10 form-control" id="racun" name="racun">
+            <option value="uporabnik">Lasstnik paketnika</option>
+            <option value="dostavljalec">Dostavljalec</option>
+        </select>
+    </div>
 
-    <input type="submit" value="Ustvari">
+	<div class="form-group row">
+    	<div class="col-sm-10">
+            <input type="submit" class="btn btn-primary" value="Ustvari">
+        </div>
+    </div>
 </form>
 
 

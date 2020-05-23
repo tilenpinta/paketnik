@@ -23,7 +23,7 @@ function requiresCourier(req, res, next) {
 }
 
 function requiresPrivilegedUser(req, res, next) {
-    if (req.session && req.session.userId && req.session.isAdmin)  {
+    if (req.session && req.session.userId && req.session.userAdmin)  {
         return next();
     } else {
         const err = new Error('Dostop ni dovoljen!');
@@ -41,6 +41,7 @@ router.get('/:id', requiresPrivilegedUser, mailboxController.show);
 
 //router.post('/', requiresPrivilegedUser, mailboxController.create); // TODO
 router.post('/register',  requiresCustomer, mailboxController.register);
+router.post('/createMailbox',  requiresPrivilegedUser, mailboxController.create);
 /**
  * preko te metode bo dostavljalec zahteval, da uporabnik odklene paketnik
  */

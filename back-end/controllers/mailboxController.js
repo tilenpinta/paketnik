@@ -54,7 +54,11 @@ module.exports = {
     create: function (req, res) {
         const mailbox = new mailboxModel({
 			registrationId : req.body.registrationId,
+<<<<<<< HEAD
 			unlockKey : req.body.unlockKey,
+=======
+            unlockKey : req.body.unlockKey,
+>>>>>>> 3821abe620515a4339de73f85ae3e85e14dd00e6
             ownerId : "",
             courierId : "",
             requireUnlock : false, // privzeto nihce ne zahteva odklep
@@ -96,7 +100,8 @@ module.exports = {
                                 error: err
                             });
                         }
-                        return res.status(201).json("Uspesno ste registrirali vas paketnik");
+                        res.render('mailbox/naive-response', { response:  mailbox })
+                        //return res.status(201).json("Uspesno ste registrirali vas paketnik");
                     });
                 }
             });
