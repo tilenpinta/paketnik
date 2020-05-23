@@ -4,20 +4,9 @@ const userModel = require('../models/userModel.js');
 const mailboxModel = require('../models/mailboxModel.js');
 const tokenModel = require('../models/tokenModel.js');
 const actualOrderModel = require('../models/actualOrderModel.js');
-const fs = require('fs');
-const AdmZip = require('adm-zip');
-const player = require('node-wav-player');
 
-/**
- * orderController.js
- *
- * @description :: Server-side logic for managing orders.
- */
 module.exports = {
 
-    /**
-     * orderController.list()
-     */
     list: function (req, res) {
         itemModel.find({ customerId: req.session.userId }, (err, items) => {
             if (err) {
@@ -30,31 +19,7 @@ module.exports = {
         });
     },
 
-    /**
-     * orderController.show()
-     */
-    show: function (req, res) {
-        var id = req.params.id;
-        orderModel.findOne({ _id: id }, function (err, order) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when getting order.',
-                    error: err
-                });
-            }
-            if (!order) {
-                return res.status(404).json({
-                    message: 'No such order'
-                });
-            }
-            return res.json(order);
-        });
-    },
-
-    /**
-     * orderController.create()
-     */
-    create: (req, res) => {
+    placeAnOrder: (req, res) => {
         userModel.findOne({ $and: [{ isOrdinaryUser: false }, { isAdmin: false }] }, (err, courier) => {
             if (err) {
                 return res.status(500).json({
@@ -285,47 +250,49 @@ module.exports = {
                             message: 'No such order'
                         });
                     } else {
-                        /**
-                         * gre skozi seznam izdelkov, ki jih je dostavljalec prinesel 
-                         * in primerja s tistim seznamom ki bi naj prisel 
-                         * če najde ujemanje po barkodi, preveri potem še po teži in kolicini
-                         * 
-                         * @warning koda je zakomentirana, saj trenutno ne deluje pravilno
-                         */
 
-                         /*
-                        for (let i = 0; i < order.items.length; i++) {
-                            let tmp = 0;
-                            for (let j = 0; j < actualOrder.items.length; j++) {
-                                tmp++;
-                                if (order.items[i].barcode === actualOrder.items[j].barcode) {
-                                    if (order.items[i].weight !== actualOrder.items[j].weight || order.items[i].quantity !== actualOrder.items[j].quantity ) {
-                                        return res.status(404).json({
-                                            message: 'Ta izdelek ni bil v narocilu. Prosimo, poskusiste s pravim izdelkom'
-                                        });
-                                    } else {
-                                        break;
-                                    }
-                                } else if (tmp === actualOrder.items.length - 1) {
-                                    return res.status(404).json({
-                                        message: 'Ta izdelek ni bil v narocilu. Prosimo, poskusiste s pravim izdelkom'
-                                    })
-                                }
-                            }
-                        }*/
-                        order.isDelivered = true;
-                        order.save((err, order) => {
-                            if (err) {
-                                return res.status(500).json({
-                                    message: 'Napaka',
-                                    error: err
-                                });
+                        let orderArray = order.items;
+                        let actualArray = actualOrder.items;
+                        let barcodes = [];
+                        actualArray.forEach(element => barcodes.push(element.barcode));
+                        sorted = orderArray.sort((a, b) => {
+                            const key = 'barcode';
+                            let A = a[key], B = b[key];
+                            if (barcodes.indexOf(A) > barcodes.indexOf(B)) {
+                                return 1;
                             } else {
-                                return res.status(200).json({
-                                    message: 'Dostava je opravljena'
-                                })
+                                return -1;
                             }
                         });
+
+                        if ((sorted == null || actualArray == null) || (sorted.length != actualArray.length)) {
+                            return res.status(404).json({
+                                message: 'Izdelki se ne ujemajo'
+                            });
+                        }
+
+                        else {
+                            for (let i = 0; i < sorted.length; ++i) {
+                                if (sorted[i].barcode !== actualArray[i].barcode || sorted[i].quantity != actualArray[i].quantity || sorted[i].weight != actualArray[i].weight) {
+                                    return res.status(404).json({
+                                        message: 'Izdelki se ne ujemajo'
+                                    });
+                                }
+                            }
+                            order.isDelivered = true;
+                            order.save((err, order) => {
+                                if (err) {
+                                    return res.status(500).json({
+                                        message: 'Napaka',
+                                        error: err
+                                    });
+                                } else {
+                                    return res.status(200).json({
+                                        message: 'Dostava je opravljena'
+                                    })
+                                }
+                            });
+                        }
                     }
                 });
             }
