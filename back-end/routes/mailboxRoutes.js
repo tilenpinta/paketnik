@@ -41,6 +41,7 @@ router.get('/:id', requiresPrivilegedUser, mailboxController.show);
 
 //router.post('/', requiresPrivilegedUser, mailboxController.create); // TODO
 router.post('/register',  requiresCustomer, mailboxController.register);
+router.post('/createMailbox',  requiresPrivilegedUser, mailboxController.create);
 /**
  * preko te metode bo dostavljalec zahteval, da uporabnik odklene paketnik
  */
