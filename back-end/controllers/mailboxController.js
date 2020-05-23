@@ -96,7 +96,8 @@ module.exports = {
                                 error: err
                             });
                         }
-                        return res.status(201).json("Uspesno ste registrirali vas paketnik");
+                        res.render('mailbox/naive-response', { response:  mailbox })
+                        //return res.status(201).json("Uspesno ste registrirali vas paketnik");
                     });
                 }
             });

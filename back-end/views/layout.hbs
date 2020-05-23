@@ -36,16 +36,16 @@
           {{#if session.userId}}
             {{#if session.userAdmin}}
             <li class="nav-item">
-                <a class="nav-link" href="../mailboxes/addMailbox">Ustvari Nabiralnik</a>
+                <a class="nav-link" href="../../mailboxes/addMailbox">Ustvari Nabiralnik</a>
             </li>
             {{/if}}
             {{#if session.isOrdinaryUser}}
             <li class="nav-item">
-                <a class="nav-link" href="../mailboxes/register">Registriraj Nabiralnik</a>
+                <a class="nav-link" href="../../mailboxes/register">Registriraj Nabiralnik</a>
             </li>
             {{else}}
             <li class="nav-item">
-                <a class="nav-link" href="../mailboxes/token">TOKEN</a>
+                <a class="nav-link" href="../../mailboxes/token">TOKEN</a>
             </li>
             {{/if}}
           {{/if}}
