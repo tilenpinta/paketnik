@@ -307,7 +307,6 @@ module.exports = {
                     error: err
                 });
             }
-
         });
     },
 

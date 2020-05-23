@@ -55,6 +55,8 @@ module.exports = {
         const mailbox = new mailboxModel({
 			registrationId : req.body.registrationId,
 			unlockKey : req.body.unlockKey,
+            ownerId : "",
+            courierId : "",
             requireUnlock : false, // privzeto nihce ne zahteva odklep
             isLocked: true // privzeto je paketnik zaklenjen
         });

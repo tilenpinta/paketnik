@@ -14,12 +14,10 @@ const mailboxSchema = new Schema({
 /**
  * Preveri,če paket obstaja s takšno registracijsko številko
  *
- *
  * @param regId registracijska številka za registracijo paketnika, ki jo poda prijavljeni uporabnik
  * @param callback v primeru, da so pogoji izpolnjeni, vrne nam paketnik za registracijo
  */
 mailboxSchema.statics.validation = (regId, callback) => {
-//	console.log("From foo:" +regId);
 	Mailbox.findOne({ registrationId: regId })
 		.exec(function (err, mailbox) {
 			if (err) {
