@@ -1,16 +1,17 @@
 <div>
+    asdd
 {{#each this.order}}
     <div class="row">
-        <div class="col col-md-9">
-            <p>Id uporabnika: {{customerId}} </p>
-            <p>Id dostavljalca: {{courierId}} </p>
-            <p>Datum: {{orderDate}} </p>
-            <p>Artikli: </p>
+        <div class="col col-md-9 center">
+            <p><b>Id uporabnika: </b>{{customerId}} </p>
+            <p><b>Id dostavljalca: </b>{{courierId}} </p>
+            <p><b>Datum: </b>{{orderDate}} </p>
+            <p><b>Artikli: </b></p>
             {{#if isDelivered}}
-                <p>Dostavljeno</p>
+                <h4>Dostavljeno</h4>
             {{else}}
                 <form action="requireUnlock/{{customerId}}/{{_id}}" method="post">
-                    <input type="submit" value="Zahtevaj odklepanje">
+                    <input type="submit" class="btn btn-primary" value="Zahtevaj odklepanje">
                 </form>
             {{/if}}
         </div>

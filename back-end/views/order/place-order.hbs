@@ -1,16 +1,14 @@
 <div>
 {{#each this.order}}
 <hr>
-        <div class="row">
-            <div class="col col-md-9">
-                <p>Izdelek: {{name}} </p>
-                <p>Kolicina: {{quantity}} </p>
-
-                <p>Teza: {{weight}} </p>
-                <p>Črtna koda: {{barcode}} </p>
-
-            </div>
+    <div class="row order-center">
+        <div class="col col-md-9">
+            <h3><b>Izdelek: </b>{{name}} </h3>
+            <h4><b>Kolicina: </b>{{quantity}} </h4>
+            <h4><b>Teza: </b>{{weight}} </h4>
+            <p><b>Črtna koda: </b>{{barcode}} </p>
         </div>
+    </div>
 {{/each}}
 
 <form action="placeOrder/" method="post">

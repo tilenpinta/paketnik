@@ -3,7 +3,12 @@
     Your browser does not support the audio element.
 </audio>
 
-<p>OrderId: this.currentOrderId</p>
-<form action="/orders/deliver/{{this.currentOrderId}}" method="post">
-    <input type="submit" value="Koncaj dostavo">
-</form>
+<div class="row">
+    <div class="col col-md-8 center">
+        <p><b>OrderId: </b>this.currentOrderId</p>
+        <form action="/orders/deliver/{{this.currentOrderId}}" method="post">
+            <input type="submit" class="btn btn-primary" value="Koncaj dostavo">
+        </form>
+
+    </div>
+</div>
