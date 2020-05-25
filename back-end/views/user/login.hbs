@@ -1,21 +1,34 @@
 <h1>PRIJAVA</h1>
 <hr>
-<form action="login" method="post">
-	<div class="form-group row">
-		<label for="username" class="col-sm-2 col-form-label">Uporabniško: </label>
-		<div class="col-sm-10">
-			<input type="text" class="form-control" id="username" name="username" placeholder="Uporabniško ime" required>
+<div class="container">
+	<div class="row">
+		<div class="col col-md-2"></div>
+		<div class="col col-md-8">
+
+			<form action="login" method="post">
+				<fieldset>
+
+					<div class="form-group row">
+						<label for="username" class="col-sm-2 col-form-label">Uporabniško: </label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="username" name="username"
+								placeholder="Uporabniško ime" required>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="password" class="col-sm-2 col-form-label">Geslo: </label>
+						<div class="col-sm-10">
+							<input type="password" class="form-control" id="password" name="password"
+								placeholder="Geslo" required>
+						</div>
+					</div>
+					<div class="form-group row">
+						<div class="col-sm-10">
+							<input type="submit" class="btn btn-primary" value="prijava">
+						</div>
+					</div>
+				</fieldset>
+
+			</form>
 		</div>
 	</div>
-	<div class="form-group row">
-		<label for="password" class="col-sm-2 col-form-label">Geslo: </label>
-		<div class="col-sm-10">
-			<input type="password" class="form-control" id="password" name="password" placeholder="Geslo" required>
-		</div>
-	</div>
-	<div class="form-group row">
-    	<div class="col-sm-10">
-			<input type="submit" class="btn btn-primary" value="prijava">
-		</div>
-	</div>
-</form>

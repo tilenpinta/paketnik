@@ -8,7 +8,6 @@ const multer = require('multer');
 const upload = multer({ dest: 'public/images/' });
 
 function requiresLogin(req, res, next) {
-console.log("Avtentikacija!");
   if (req.session && req.session.userId) {
     return next();
   } else {

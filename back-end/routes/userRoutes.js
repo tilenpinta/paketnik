@@ -36,6 +36,7 @@ router.get('/adminCreate', requiresPrivilegedUser, userController.showAdminCreat
 router.get('/adminDelete', requiresPrivilegedUser, userController.showAdminDelete);
 router.get('/adminUpdate', requiresPrivilegedUser, userController.showAdminUpdate);
 router.get('/notifications', requiresCustomer, userController.showNotifications);
+router.get('/loginWithImage', userController.showLoginWithImage)
 router.get('/register', userController.showRegister);
 router.get('/profile', userController.profile);
 router.get('/logout', userController.logout);
@@ -47,6 +48,7 @@ router.post('/logout', userController.logout);
 router.post('/createNewUser', requiresPrivilegedUser, userController.adminCreate);
 router.post('/deleteUser', requiresPrivilegedUser, userController.adminDelete);
 router.post('/updateUser', requiresPrivilegedUser, userController.adminUpdate);
+router.post('/loginWithImage', userController.loginWithImage);
 router.post('/unlockMailbox/:id', requiresCustomer, userController.unlockMailbox);
 /*
  * PUT

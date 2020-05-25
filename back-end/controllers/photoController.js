@@ -1,4 +1,4 @@
-var photoModel = require('../models/photoModel.js');
+const photoModel = require('../models/photoModel.js');
 
 /**
  * photoController.js
@@ -55,12 +55,9 @@ module.exports = {
     create: (req, res) => {
         const id = req.session.userId;
         photoModel.alreadyExists(id,(error, image) =>{
-           // if(error){
-             //   let err = new Error("Id" + id);
-               // err.status = 401;
-                //return next(err);
-            //}
              if(!image){
+
+                req.file.filename = req.file.filename + '.png';
                 const photo = new photoModel({
                     name: req.body.name,
                     path: 'images/' + req.file.filename,
@@ -98,7 +95,7 @@ module.exports = {
                 });
             }
             else {
-                return res.json('Nepricakovana napaka');
+                return res.status(500).render('naive-response', { response:  'Nepricakovana napaka<hr>' + error  })
             }
 
         });
@@ -144,8 +141,8 @@ module.exports = {
     /**
      * photoController.remove()
      */
-    remove: function (req, res) {
-        var id = req.params.id;
+    remove: (req, res) => {
+        const id = req.params.id;
         photoModel.findByIdAndRemove(id, function (err, photo) {
             if (err) {
                 return res.status(500).json({
@@ -153,7 +150,7 @@ module.exports = {
                     error: err
                 });
             }
-            return res.status(204).json();
+            return res.status(204).render('naive-response', { response:  'Slika je uspesno izbrisana' })
         });
     }
 };

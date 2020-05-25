@@ -1,6 +1,4 @@
 const mailboxModel = require('../models/mailboxModel.js');
-const tokenModel = require('../models/tokenModel.js');
-const request = require('request');
 
 /**
  * mailboxController.js
@@ -12,8 +10,8 @@ module.exports = {
     /**
      * mailboxController.list()
      */
-    list: function (req, res) {
-        mailboxModel.find(function (err, mailboxes) {
+    list: (req, res) => {
+        mailboxModel.find( (err, mailboxes) => {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting mailbox.',
@@ -27,7 +25,7 @@ module.exports = {
     /**
      * mailboxController.show()
      */
-    show: function (req, res) {
+    show: (req, res) => {
         let id = req.params.id;
         mailboxModel.findOne({registrationId: id}, function (err, mailboxes) {
             if (err) {
@@ -51,7 +49,7 @@ module.exports = {
     /**
      * Preko te metode lahko samo admin dodaja nove paketnike
      */
-    create: function (req, res) {
+    create: (req, res) => {
         const mailbox = new mailboxModel({
 			registrationId : req.body.registrationId,
             unlockKey : req.body.unlockKey,
@@ -68,7 +66,7 @@ module.exports = {
                     error: err
                 });
             }
-            return res.status(201).json(mailbox);
+            return res.status(200).render('naive-response', { text : 'Uspesno ste kreirali nabiralnik '});
         });
     },
 
@@ -96,8 +94,7 @@ module.exports = {
                                 error: err
                             });
                         }
-                        res.render('mailbox/naive-response', { response:  mailbox })
-                        //return res.status(201).json("Uspesno ste registrirali vas paketnik");
+                        return res.status(200).render('naive-response', { response:  'Uspesno ste registrirali vas paketnik' })
                     });
                 }
             });
@@ -114,9 +111,9 @@ module.exports = {
     /**
      * mailboxController.update()
      */
-    update: function (req, res) {
+    update: (req, res) => {
         const id = req.params.id;
-        mailboxModel.findOne({_id: id}, function (err, mailbox) {
+        mailboxModel.findOne({_id: id}, (err, mailbox) => {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting mailbox',
@@ -132,7 +129,7 @@ module.exports = {
             mailbox.registrationId = req.body.registrationId ? req.body.registrationId : mailbox.registrationId;
 			mailbox.unlockKey = req.body.unlockKey ? req.body.unlockKey : mailbox.unlockKey;
 
-            mailbox.save(function (err, mailbox) {
+            mailbox.save( (err, mailbox) => {
                 if (err) {
                     return res.status(500).json({
                         message: 'Error when updating mailbox.',
@@ -140,7 +137,7 @@ module.exports = {
                     });
                 }
 
-                return res.json(mailbox);
+                return res.status(200).render('naive-response', { response:  'Uspesno ste posodobili paketnik z id: ' + id })
             });
         });
     },
@@ -148,8 +145,8 @@ module.exports = {
     /**
      * mailboxController.remove()
      */
-    remove: function (req, res) {
-        var id = req.params.id;
+    remove: (req, res) => {
+        const id = req.params.id;
         mailboxModel.findByIdAndRemove(id, function (err, mailbox) {
             if (err) {
                 return res.status(500).json({
