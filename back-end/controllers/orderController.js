@@ -136,8 +136,8 @@ module.exports = {
                     error: err
                 });
             } else if (orders) {
-                console.log("asd")
                 const result = orders.filter(element => element.isDelivered == false);
+                console.log("asd")
 
                 res.render('order/undelivered-orders', { order: orders })
             } else {
