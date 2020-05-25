@@ -1,22 +1,20 @@
-<h1>PRIJAVA</h1>
-<hr>
-<div class="container">
-	<div class="row">
-		<div class="col col-md-2"></div>
-		<div class="col col-md-8">
+	<div class="row d-flex justify-content-center">
+	
 
+		<div class="col col-md-6">
+				<h1>PRIJAVA</h1>	
+			<h5>Prijavi se z uporabniškim imenom</h5>
+			<hr>
 			<form action="login" method="post">
 				<fieldset>
 
 					<div class="form-group row">
-						<label for="username" class="col-sm-2 col-form-label">Uporabniško: </label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="username" name="username"
 								placeholder="Uporabniško ime" required>
 						</div>
 					</div>
 					<div class="form-group row">
-						<label for="password" class="col-sm-2 col-form-label">Geslo: </label>
 						<div class="col-sm-10">
 							<input type="password" class="form-control" id="password" name="password"
 								placeholder="Geslo" required>
@@ -24,7 +22,7 @@
 					</div>
 					<div class="form-group row">
 						<div class="col-sm-10">
-							<input type="submit" class="btn btn-primary" value="prijava">
+							<input type="submit" class="btn-block btn btn-primary" value="prijava">
 						</div>
 					</div>
 				</fieldset>
@@ -32,3 +30,25 @@
 			</form>
 		</div>
 	</div>
+	<div class="row d-flex justify-content-center">
+		<div class="col col-md-6">
+<h6>Imate že naloženo sliko?</h6>
+			<h5>Prijavi se s sliko</h5>
+
+
+			<form action="loginWithImage" method="post" enctype="multipart/form-data">
+				<fieldset>
+
+					<div class="form-group row">
+						<input type="file" class="col-sm-4 col-form-input" name="slika">
+					</div>
+
+					<div class="form-group row">
+						<div class="col-sm-10">
+							<input type="submit" class="btn-block btn btn-primary" value="Dodaj">
+						</div>
+					</div>
+					<fieldset>
+
+			</form>
+		</div>

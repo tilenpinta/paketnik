@@ -1,10 +1,11 @@
 const userModel = require('../models/userModel.js');
-const photoModel = require('../models/photoModel.js')
+const photoModel = require('../models/photoModel.js');
 const mailboxModel = require('../models/mailboxModel.js');
 const tokenModel = require('../models/tokenModel.js');
-const request = require('request')
+const request = require('request');
 const AdmZip = require('adm-zip');
-const imageDiff = require('image-diff');
+const resemble = require("resemblejs");
+const fs = require("fs");
 
 const bcrypt = require('bcrypt');
 /**
@@ -76,7 +77,7 @@ module.exports = {
                 });
             }
             else {
-                return res.json("Fuck");
+                return res.status(500).render('naive-response', { text: "Nepricakovana napaka" });
             }
         });
 
@@ -127,21 +128,37 @@ module.exports = {
      * userController.profil()
      */
 
-    profile: function (req, res, next) {
-        userModel.findById(req.session.userId)
-            .exec(function (error, user) {
-                if (error) {
-                    return next(error);
+    profile: (req, res, next) => {
+        const id = req.session.userId;
+        userModel.findOne({ _id: id }, (error, user) => {
+            if (error) {
+                return next(error);
+            } else {
+                if (user === null) {
+                    let err = new Error('Not authorized! Go back!');
+                    err.status = 400;
+                    return next(err);
                 } else {
-                    if (user === null) {
-                        let err = new Error('Not authorized! Go back!');
-                        err.status = 400;
-                        return next(err);
-                    } else {
-                        res.render('user/profile', user);
-                    }
+                    photoModel.findOne({ ownerId: req.session.userId }, (err, photo) => {
+                        if (err){
+                            return res.status(500).json({
+                                message: 'Error when getting user.',
+                                error: err
+                            });
+                        } else {
+                            if (photo === null) {
+                                return res.status(200).render('user/profile', {user: user, hasPhoto: false});
+
+                            } else {
+                                //console.log(photo);
+                                return res.status(200).render('user/profile', {user: user, photo : photo, hasPhoto: true});
+                            }
+                        }
+
+                    });
                 }
-            });
+            }
+        });
     },
     /**
      * userController.update()
@@ -203,9 +220,6 @@ module.exports = {
     showAdminUpdate: (req, res) => {
         res.render('user/admin-update');
     },
-    showLoginWithImage: (req, res) =>{
-        res.render('user/login-with-image');
-    },
 
     adminCreate: (req, res) => {
         console.log(req.body.racun);
@@ -246,14 +260,15 @@ module.exports = {
 
     adminDelete: (req, res) => {
         const id = req.body.user_id;
-        userModel.deleteOne({ _id: id }, err => {
+        userModel.deleteOne({_id: id }, (err, user) => {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when deleting the user.',
                     error: err
                 });
+            } else{
+            return res.status(204).render('naive-response', {text: 'uspesno ste obrisali uporabnika z ID ' + id});
             }
-            return res.status(204).render('naive-response', { response:  'Uspesno ste izbrisali uporabnika z id' + id })
         });
     },
 
@@ -261,20 +276,13 @@ module.exports = {
         const id = req.body.user_id;
         console.log("Id od update uproabnika: " + id);
 
-        let ordinaryUser = true;
-
-        if (req.body.racun.toString() !== 'uporabnik') {
-            ordinaryUser = false;
-        }
-
         const setValues = {
             $set: {
                 email: req.body.email, username: req.body.username,
-                isOrdinaryUser: ordinaryUser, isAdmin: false
+                typeOfUser: req.body.racun, isAdmin: false
             }
         };
-        const myquery = { _id: id };
-
+        const myquery = {_id: id};
         userModel.updateOne(myquery, setValues, (err, user) => {
             if (err) {
                 return res.status(500).json({
@@ -289,8 +297,10 @@ module.exports = {
             } else {
                 return res.status(201).json(user);
             }
+
         });
     },
+
 
     showNotifications: (req, res) => {
         mailboxModel.findOne({ ownerId: req.session.userId }, (err, mailbox) => {
@@ -351,13 +361,11 @@ module.exports = {
                             const ourDate = Date.now();
                             const fileSource = './public/audio/token' + ourDate + '.wav';
                             const zipSource = './public/audio/token' + ourDate + '.zip';
-                            //    <source src="/public/../audio/token1590011668826.wav/token.wav" type="audio/wav">
                             const token = new tokenModel({
-                                base64String: output.Data,
                                 created: ourDate,
                                 courierId: mailbox.courierId,
                                 orderId: mailbox.orderId,
-                                crap: fileSource
+                                path: fileSource
                             });
                             require("fs").writeFile(zipSource, output.Data, 'base64', function (err) {
                                 const zip = new AdmZip(zipSource);
@@ -380,7 +388,7 @@ module.exports = {
                                                 error: err
                                             });
                                         }
-                                        return res.status(200).render('naive-response', { response:  'Zeton je poslan' })
+                                        return res.status(200).render('naive-response', { response: 'Zeton je poslan' })
                                     });
                                 });
                             });
@@ -409,7 +417,39 @@ module.exports = {
     },
 
     loginWithImage: (req, res) => {
+        photoModel.find(function (err, photos) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting photo.',
+                    error: err
+                });
+            } else if(photos) {
+                const imagePath = './public/images/' + req.file.filename;
+                photos.forEach(photo => {
+                    resemble(fs.readFileSync('./public/' + photo.path))
+                        .compareTo(fs.readFileSync(imagePath)).ignoreColors().onComplete( (data) => {
+                        if(data.rawMisMatchPercentage < 0.01){
+                            userModel.findOne( {_id: photo.ownerId}, (err, user) =>{
+                                if(err){
+                                    return res.status(500).json({
+                                        message: 'Napaka',
+                                        error: err
+                                    });
+                                } else {
+                                    req.session.userId = user._id;
+                                    req.session.userAdmin = user.isAdmin;
+                                    req.session.isOrdinaryUser = user.isOrdinaryUser;
+                                    return res.status(201).render('naive-response', { text: 'Uspesno ste prijavljeni' });
 
-        return res.status(200).render('naive-response', {text: 'uspesno'});
+                                }
+                            });
+                        }
+                    });
+                });
+
+            } else {
+                return res.status(200).render('naive-response', { text: 'Prijava s sliko ni uspela' });
+            }
+        });
     }
 };

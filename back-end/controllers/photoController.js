@@ -57,12 +57,9 @@ module.exports = {
         photoModel.alreadyExists(id,(error, image) =>{
              if(!image){
 
-                req.file.filename = req.file.filename + '.png';
                 const photo = new photoModel({
                     name: req.body.name,
                     path: 'images/' + req.file.filename,
-                    views: req.body.views,
-                    likes: req.body.likes,
                     ownerId: req.session.userId
                 });
 
@@ -79,9 +76,7 @@ module.exports = {
             else if(image){
                 const newPath = 'images/' + req.file.filename;
                 image.name = req.body.name ? req.body.name : image.name;
-                image.path = req.body.path ? newPath : image.path;
-                image.views = req.body.views ? req.body.views : image.views;
-                image.likes = req.body.likes ? req.body.likes : image.likes;
+                image.path = newPath;
 
                 image.save( (err, image) =>{
                     if (err) {

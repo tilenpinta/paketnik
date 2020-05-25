@@ -27,6 +27,7 @@ router.get('/:id', itemController.show);
  */
 router.post('/', itemController.create);
 router.post('/addItem', requiresCustomer, itemController.addItem);
+router.post('/removeItem/:id', requiresCustomer, itemController.removeItem);
 /*
  * PUT
  */

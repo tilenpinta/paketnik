@@ -4,8 +4,6 @@ const Schema   = mongoose.Schema;
 const photoSchema = new Schema({
 	'name' : String,
 	'path' : String,
-	'views' : Number,
-	'likes' : Number,
 	'ownerId': String
 });
 
@@ -28,7 +26,6 @@ photoSchema.statics.alreadyExists = (reqId, callback) => {
 			} else if (photo){
 				return callback(null, photo);
 			}
-
 		});
 }
 

@@ -2,10 +2,9 @@ const express = require('express');
 const router = express.Router();
 const photoController = require('../controllers/photoController.js');
 
-//knjižnica, ki nam omogoča prejemanje datotek (multipart zahtev)
 const multer = require('multer');
-//mesto, kam bomo prenašali datoteke
 const upload = multer({ dest: 'public/images/' });
+
 
 function requiresLogin(req, res, next) {
   if (req.session && req.session.userId) {

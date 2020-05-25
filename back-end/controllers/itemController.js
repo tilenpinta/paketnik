@@ -139,7 +139,16 @@ module.exports = {
     },
 
     removeItem: (req, res) => {
-        //TODO
+        const id = req.params.id;
+        itemModel.findByIdAndRemove(id, function (err, item) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when deleting the item.',
+                    error: err
+                });
+            }
+            return res.status(204).redirect('/orders/placeOrder');
+        });
     }
 
 };

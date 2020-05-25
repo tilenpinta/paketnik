@@ -13,7 +13,7 @@ function mapOrder(array, order, key) {
         } else {
             return -1;
         }
-[]
+
     });
 
     return array;

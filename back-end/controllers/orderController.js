@@ -34,9 +34,7 @@ module.exports = {
                             error: err
                         });
                     } else if (orderedItems.length === 0) {
-                        return res.status(404).json({
-                            message: 'Items not found',
-                        });
+                        return res.status(404).render('naive-response', {text: 'Ni artiklov'});
                     } else {
                         let order = new orderModel({
                             customerId: req.session.userId,
@@ -216,7 +214,7 @@ module.exports = {
                 });
             } else {
                 let sorted = tokens.sort((a, b) => a.created - b.created);
-                const path = sorted[sorted.length - 1].crap;
+                const path = sorted[sorted.length - 1].path;
                 const fileName = path.substring(8, path.length) + '/token.wav';
                 console.log('filename' + fileName);
                 res.render('order/play-token', { fileSource: fileName, currentOrderId: orderId });

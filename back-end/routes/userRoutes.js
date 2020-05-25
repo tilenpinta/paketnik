@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController.js');
 const multer = require('multer');
+const upload = multer({ dest: 'public/images/' });
 
-const upload = multer({ dest: 'public/audios/' });
 
 /**
  * "Privileged user" je admin. Lastnost admina nastavimo preko PB.
@@ -36,7 +36,6 @@ router.get('/adminCreate', requiresPrivilegedUser, userController.showAdminCreat
 router.get('/adminDelete', requiresPrivilegedUser, userController.showAdminDelete);
 router.get('/adminUpdate', requiresPrivilegedUser, userController.showAdminUpdate);
 router.get('/notifications', requiresCustomer, userController.showNotifications);
-router.get('/loginWithImage', userController.showLoginWithImage)
 router.get('/register', userController.showRegister);
 router.get('/profile', userController.profile);
 router.get('/logout', userController.logout);
@@ -46,18 +45,19 @@ router.post('/', userController.create);
 router.post('/login', userController.login);
 router.post('/logout', userController.logout);
 router.post('/createNewUser', requiresPrivilegedUser, userController.adminCreate);
-router.post('/deleteUser', requiresPrivilegedUser, userController.adminDelete);
-router.post('/updateUser', requiresPrivilegedUser, userController.adminUpdate);
-router.post('/loginWithImage', userController.loginWithImage);
+router.post('/loginWithImage', upload.single('slika'), userController.loginWithImage);
 router.post('/unlockMailbox/:id', requiresCustomer, userController.unlockMailbox);
+router.post('/deleteUser', requiresPrivilegedUser, userController.adminDelete); //morala bi biti delete
+router.post('/updateUser', requiresPrivilegedUser, userController.adminUpdate);
 /*
  * PUT
  */
+
 router.put('/:id', userController.update);
 
 /*
  * DELETE
  */
-router.delete('/:id', userController.remove);
+//router.delete('/:id', userController.remove);
 
 module.exports = router;
