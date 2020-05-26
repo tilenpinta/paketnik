@@ -38,7 +38,7 @@
         {{/if}}
         {{#if session.userId}}
         <li class="nav-item">
-          <a class="nav-link" href="../../photos/dodaj">Dodaj Sliko</a>
+          <a class="nav-link" href="../../photos/dodaj">Posodobi sliko</a>
         </li>
         {{/if}}
         {{#if session.userId}}
@@ -52,15 +52,12 @@
           <a class="nav-link" href="../../mailboxes/register">Registriraj Nabiralnik</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="../../orders/placeOrder">Dodaj Naročilo</a>
+          <a class="nav-link" href="../../orders/placeOrder">Oddaj Naročilo</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="../../items/addItem">Dodaj Artikel</a>
         </li>
         {{else}}
-        <li class="nav-item">
-          <a class="nav-link" href="../../mailboxes/token">TOKEN</a>
-        </li>
         <li class="nav-item">
           <a class="nav-link" href="../../orders/checkForUndeliveredOrders">Preveri Naročila</a>
         </li>
@@ -68,7 +65,7 @@
         {{/if}}
         {{#if session.isOrdinaryUser}}
         <li class="nav-item">
-          <a class="nav-link" href="../users/notifications">Obvestilo</a>
+          <a class="nav-link" href="../users/notifications">Obvestila</a>
         </li>
         {{/if}}
       </ul>
@@ -104,9 +101,8 @@
       </ul>
     </div>
   </nav>
-  <div class="body">
+  <br><br><br><br>
     {{{body}}}
-  </div>
 </body>
 
 </html>

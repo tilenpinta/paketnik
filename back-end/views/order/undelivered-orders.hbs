@@ -1,19 +1,33 @@
-<div>
-{{#each this.order}}
-    <div class="row">
-        <div class="col col-md-9 center">
-            <p><b>Id uporabnika: </b>{{customerId}} </p>
-            <p><b>Id dostavljalca: </b>{{courierId}} </p>
-            <p><b>Datum: </b>{{orderDate}} </p>
-            <p><b>Artikli: </b></p>
-            {{#if isDelivered}}
-                <h4>Dostavljeno</h4>
-            {{else}}
-                <form action="requireUnlock/{{customerId}}/{{_id}}" method="post">
-                    <input type="submit" class="btn btn-primary" value="Zahtevaj odklepanje">
-                </form>
-            {{/if}}
+<div class="row d-flex justify-content-center">
+    <div class="col col-md-6">
+        <div class="panel panel-default">
+
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col" class="text-left">Id naročila</th>
+                        <th scope="col" class="text-left">Datum</th>
+                        <th scope="col" class="text-left">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each this.order}}
+                    <tr class="table-info">
+
+                        <th scope="row">{{_id}}</th>
+                        <td>{{orderDate}}</td>
+                        <td>
+                            {{#if isDelivered}}
+                            Dostavljeno
+                            {{else}}
+                            <form action="requireUnlock/{{customerId}}/{{_id}}" method="post">
+                                <input type="submit" class="btn btn-primary" value="Zahtevaj odklepanje">
+                            </form>
+                            {{/if}}
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
         </div>
     </div>
-
-{{/each}}

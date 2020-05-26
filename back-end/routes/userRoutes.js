@@ -30,7 +30,7 @@ function requiresCustomer(req, res, next) {
     }
 }
 
-router.get('/', userController.list);
+//router.get('/', userController.list);
 router.get('/login', userController.showLogin);
 router.get('/adminCreate', requiresPrivilegedUser, userController.showAdminCreate);
 router.get('/adminDelete', requiresPrivilegedUser, userController.showAdminDelete);
@@ -41,7 +41,7 @@ router.get('/profile', userController.profile);
 router.get('/logout', userController.logout);
 router.get('/:id', userController.show);
 
-router.post('/', userController.create);
+//router.post('/', userController.create);
 router.post('/login', userController.login);
 router.post('/logout', userController.logout);
 router.post('/createNewUser', requiresPrivilegedUser, userController.adminCreate);

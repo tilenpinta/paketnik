@@ -140,18 +140,18 @@ module.exports = {
                     return next(err);
                 } else {
                     photoModel.findOne({ ownerId: req.session.userId }, (err, photo) => {
-                        if (err){
+                        if (err) {
                             return res.status(500).json({
                                 message: 'Error when getting user.',
                                 error: err
                             });
                         } else {
                             if (photo === null) {
-                                return res.status(200).render('user/profile', {user: user, hasPhoto: false});
+                                return res.status(200).render('user/profile', { user: user, hasPhoto: false });
 
                             } else {
                                 //console.log(photo);
-                                return res.status(200).render('user/profile', {user: user, photo : photo, hasPhoto: true});
+                                return res.status(200).render('user/profile', { user: user, photo: photo, hasPhoto: true });
                             }
                         }
 
@@ -222,7 +222,7 @@ module.exports = {
     },
 
     adminCreate: (req, res) => {
-        console.log(req.body.racun);
+       // console.log(req.body.racun);
         let ordinaryUser = true;
 
         if (req.body.racun.toString() !== 'uporabnik') {
@@ -260,21 +260,21 @@ module.exports = {
 
     adminDelete: (req, res) => {
         const id = req.body.user_id;
-        userModel.deleteOne({_id: id }, (err, user) => {
+        userModel.deleteOne({ _id: id }, (err, user) => {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when deleting the user.',
                     error: err
                 });
-            } else{
-            return res.status(204).render('naive-response', {text: 'uspesno ste obrisali uporabnika z ID ' + id});
+            } else {
+                return res.status(204).render('naive-response', { text: 'uspesno ste obrisali uporabnika z ID ' + id });
             }
         });
     },
 
     adminUpdate: (req, res) => {
         const id = req.body.user_id;
-        console.log("Id od update uproabnika: " + id);
+        //console.log("Id od update uproabnika: " + id);
 
         const setValues = {
             $set: {
@@ -282,7 +282,7 @@ module.exports = {
                 typeOfUser: req.body.racun, isAdmin: false
             }
         };
-        const myquery = {_id: id};
+        const myquery = { _id: id };
         userModel.updateOne(myquery, setValues, (err, user) => {
             if (err) {
                 return res.status(500).json({
@@ -310,10 +310,7 @@ module.exports = {
                     error: err
                 });
             } else if (!mailbox) {
-                return res.status(404).json({
-                    message: 'Prosimo registrirajte vas paketnik',
-                    error: err
-                });
+                return res.status(404).render('naive-response', {text: 'Prosimo, registrirajte vaš paketnik'});
             } else if (mailbox) {
                 res.render('user/notifications', { box: mailbox });
             } else {
@@ -339,7 +336,6 @@ module.exports = {
             } else if (!mailbox) {
                 return res.status(404).json({
                     message: 'Prosimo registrirajte vas paketnik',
-                    error: err
                 });
             } else if (mailbox) {
                 if (mailbox.requireUnlock) {
@@ -388,7 +384,7 @@ module.exports = {
                                                 error: err
                                             });
                                         }
-                                        return res.status(200).render('naive-response', { response: 'Zeton je poslan' })
+                                        return res.status(200).render('naive-response', { text: 'Zeton je poslan' })
                                     });
                                 });
                             });
@@ -397,9 +393,8 @@ module.exports = {
                          * v primeru, da paket s tem id ne obstaja
                          */
                         else if (!error && response.statusCode === 200 && output.Result === 10009) {
-                            return res.status(404).json({
-                                message: 'Paketnik ni najden'
-                            });
+                            return res.status(404).render('naive-response', { text: 'Taki paketnik ne obstaja' });
+
                         } else if (!error && response.statusCode === 200 && output.Result !== 0 && output.Result !== 10009) {
                             return res.status(404).json({
                                 message: output.Message
@@ -423,28 +418,28 @@ module.exports = {
                     message: 'Error when getting photo.',
                     error: err
                 });
-            } else if(photos) {
+            } else if (photos) {
                 const imagePath = './public/images/' + req.file.filename;
                 photos.forEach(photo => {
                     resemble(fs.readFileSync('./public/' + photo.path))
-                        .compareTo(fs.readFileSync(imagePath)).ignoreColors().onComplete( (data) => {
-                        if(data.rawMisMatchPercentage < 0.01){
-                            userModel.findOne( {_id: photo.ownerId}, (err, user) =>{
-                                if(err){
-                                    return res.status(500).json({
-                                        message: 'Napaka',
-                                        error: err
-                                    });
-                                } else {
-                                    req.session.userId = user._id;
-                                    req.session.userAdmin = user.isAdmin;
-                                    req.session.isOrdinaryUser = user.isOrdinaryUser;
-                                    return res.status(201).render('naive-response', { text: 'Uspesno ste prijavljeni' });
+                        .compareTo(fs.readFileSync(imagePath)).ignoreColors().onComplete((data) => {
+                            if (data.rawMisMatchPercentage < 0.01) {
+                                userModel.findOne({ _id: photo.ownerId }, (err, user) => {
+                                    if (err) {
+                                        return res.status(500).json({
+                                            message: 'Napaka',
+                                            error: err
+                                        });
+                                    } else {
+                                        req.session.userId = user._id;
+                                        req.session.userAdmin = user.isAdmin;
+                                        req.session.isOrdinaryUser = user.isOrdinaryUser;
+                                        return res.status(201).render('naive-response', { text: 'Uspesno ste prijavljeni' });
 
-                                }
-                            });
-                        }
-                    });
+                                    }
+                                });
+                            }
+                        });
                 });
 
             } else {

@@ -65,7 +65,7 @@ module.exports = {
                                             error: err
                                         });
                                     }
-                                    return res.status(201).json("Narocilo je uspesno dodano");
+                                    return res.status(200).render('naive-response', {text: 'Narocilo je uspesno oddano'});
                                 });
                             }
                         });
@@ -169,7 +169,7 @@ module.exports = {
                                 error: err
                             });
                         }
-                        return res.status(201).json('Zahteva za odklepanje je bila poslana');
+                        return res.status(201).render('naive-response', {text: 'Zahteva za odklepanje je bila poslana'});
                     });
                 } else {
                     orderModel.findOne({ _id: orderId }, (err, foundOrder) => {
@@ -216,7 +216,7 @@ module.exports = {
                 let sorted = tokens.sort((a, b) => a.created - b.created);
                 const path = sorted[sorted.length - 1].path;
                 const fileName = path.substring(8, path.length) + '/token.wav';
-                console.log('filename' + fileName);
+                //console.log('filename' + fileName);
                 res.render('order/play-token', { fileSource: fileName, currentOrderId: orderId });
             }
 
@@ -245,9 +245,8 @@ module.exports = {
                             error: err
                         });
                     } else if (!actualOrder) {
-                        return res.status(404).json({
-                            message: 'No such order'
-                        });
+                        return res.status(500).render('naive-response', {text: 'Napaka'});
+
                     } else {
 
                         let orderArray = order.items;
@@ -265,17 +264,13 @@ module.exports = {
                         });
 
                         if ((sorted == null || actualArray == null) || (sorted.length != actualArray.length)) {
-                            return res.status(404).json({
-                                message: 'Izdelki se ne ujemajo'
-                            });
+                            return res.status(404).render('naive-response', {text: 'Izdelki se ne ujemajo'});
                         }
 
                         else {
                             for (let i = 0; i < sorted.length; ++i) {
                                 if (sorted[i].barcode !== actualArray[i].barcode || sorted[i].quantity != actualArray[i].quantity || sorted[i].weight != actualArray[i].weight) {
-                                    return res.status(404).json({
-                                        message: 'Izdelki se ne ujemajo'
-                                    });
+                                    return res.status(404).render('naive-response', {text: 'Izdelki se ne ujemajo'});
                                 }
                             }
                             order.isDelivered = true;
@@ -286,9 +281,7 @@ module.exports = {
                                         error: err
                                     });
                                 } else {
-                                    return res.status(200).json({
-                                        message: 'Dostava je opravljena'
-                                    });
+                                    return res.status(200).render('naive-response', {text: 'Dostava je opravljena'});
                                 }
                             });
                         }

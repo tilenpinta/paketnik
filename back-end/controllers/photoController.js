@@ -58,7 +58,7 @@ module.exports = {
              if(!image){
 
                 const photo = new photoModel({
-                    name: req.body.name,
+                    name: 'ime_slike',
                     path: 'images/' + req.file.filename,
                     ownerId: req.session.userId
                 });
@@ -70,7 +70,7 @@ module.exports = {
                             error: err
                         });
                     }
-                    return res.status(201).json(photo);
+                    return res.status(200).render('naive-response', {text: 'Slika je uspesno dodana'});
                 });
             }
             else if(image){
@@ -86,7 +86,7 @@ module.exports = {
                         });
                     }
 
-                    return res.json(image);
+                    return res.status(200).render('naive-response', {text: 'Slika je uspesno posodobljena'})
                 });
             }
             else {

@@ -35,7 +35,7 @@ function requiresPrivilegedUser(req, res, next) {
 router.get('/', requiresPrivilegedUser, mailboxController.list);
 router.get('/addMailbox', requiresPrivilegedUser, mailboxController.showAddMailbox);
 router.get('/register', requiresCustomer, mailboxController.showRegistration);
-router.get('/token', requiresCourier, mailboxController.showInsertToken)
+//router.get('/token', requiresCourier, mailboxController.showInsertToken)
 router.get('/:id', requiresPrivilegedUser, mailboxController.show);
 
 

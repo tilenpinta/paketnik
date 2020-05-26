@@ -1,24 +1,41 @@
-<div>
-{{#each this.order}}
-<hr>
-    <div class="row order-center">
-        <div class="col col-md-12">
-            <h3><b>Izdelek: </b>{{name}} </h3>
-            <h4><b>Kolicina: </b>{{quantity}} </h4>
-            <h4><b>Teza: </b>{{weight}} </h4>
-            <p><b>Črtna koda: </b>{{barcode}} </p>
-            <form action="/items/removeItem/{{_id}}" method="post">
-                <input type="submit" class="btn btn-primary" value="Odstrani artikel">
-            </form>
+<div class="row d-flex justify-content-center">
+	<div class="col col-md-6">
+        <div class="panel panel-default">
 
-        </div>
-    </div>
-{{/each}}
-    <div class="row order-center">
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col" class="text-left">Artikel</th>
+            <th scope="col" class="text-left">Količina</th>
+            <th scope="col" class="text-left">Teža</th>
+            <th scope="col" class="text-left">Črtna koda</th>
+            <th scope="col" class="text-left">Izbriši</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each this.order}}
+        <tr class="table-info">
+
+            <th scope="row">{{name}}</th>
+            <td>{{quantity}}</td>
+            <td>{{weight}}</td>
+            <td>{{barcode}}</td>
+            <td>
+                <form action="/items/removeItem/{{_id}}" method="post">
+                    <input type="submit" class="btn btn-danger" value="Odstrani artikel">
+                </form>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+</div>
+<div class="row order-center">
     <div class="col col-md-12">
         <hr>
         <form action="placeOrder/" method="post">
-            <input type="submit" class="btn btn-success" value="Oddaj narocilo">
+            <input type="submit" class="btn btn-block btn-success" value="Oddaj naročilo">
         </form>
-    </div>
-    </div>
+</div>
+</div>
+</div>

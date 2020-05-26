@@ -1,13 +1,15 @@
-<audio controls preload="auto">
-    <source src="{{this.fileSource}}" type="audio/mpeg">
-    Your browser does not support the audio element.
-</audio>
+<div class="col-sm-4 col-sm-offset-4">
+  
+</div>
 
-<div class="row">
-    <div class="col col-md-8 center">
-        <p><b>OrderId: </b>this.currentOrderId</p>
+<div class="row d-flex justify-content-center">
+    <div class="col col-md-4">
+        <h3>Predvajaj žeton in zaključi dostavo</h3>
+  <audio class="btn btn-block" controls preload="auto">
+        <source src="{{this.fileSource}}" type="audio/mpeg">
+    </audio>
         <form action="/orders/deliver/{{this.currentOrderId}}" method="post">
-            <input type="submit" class="btn btn-primary" value="Koncaj dostavo">
+            <input type="submit" class="btn btn-block btn-success" value="Končaj dostavo">
         </form>
 
     </div>

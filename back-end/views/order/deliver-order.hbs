@@ -1,19 +1,53 @@
+<div class="row d-flex justify-content-center">
+    <div class="col col-md-10">
 
-<p>Id narocila: </p>
-<div>
-    <div class="row">
-            <div class="col col-md-9">
-                <p>Id uporabnika: {{this.order.customerId}} </p>
-                <p>Id dostavljalca: {{this.order.courierId}} </p>
-                <p>Datum: {{this.order.orderDate}} </p>
-                <p>Artikli: </p>
-                    {{#each this.order.items}}
-                        <p>Izdelek z id: {{_id}}</p>
-                    {{/each}}
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col" class="text-left">Id uporabnika</th>
+                    <th scope="col" class="text-left">Id dostavljalca</th>
+                    <th scope="col" class="text-left">Datum</th>
+                    <th scope="col" class="text-left">Datum</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-info">
+                    <td>{{this.order.customerId}}</td>
+                    <td>{{this.order.courierId}} </td>
+                    <td>{{this.order.orderDate}}</td>
+                    <td>
+                        <form action="unlockWithToken/{{this.order._id}}" method="post">
+                            <input type="submit" class="btn btn-primary" value="Predvajaj zeton">
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
+<div class="row d-flex justify-content-center">
+    <div class="col col-md-10">
 
-            </div>
-        <form action="unlockWithToken/{{this.order._id}}" method="post">
-            <input type="submit" class="btn btn-primary" value="Predvajaj zeton">
-        </form>
-        </div>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col" class="text-left">Naziv artikla</th>
+                    <th scope="col" class="text-left">Teza</th>
+                    <th scope="col" class="text-left">Kolicina</th>
+                    <th scope="col" class="text-left">Črtna koda</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each this.order.items}}
+                <tr class="table-info">
+                    <td>{{name}}</td>
+                    <td>{{weight}} </td>
+                    <td>{{quantity}}</td>
+                    <td> {{barcode}} </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
