@@ -6,7 +6,9 @@ Implementirana:
   - nodeJS (express framework)
   - handlebars
   - MongoDB
-      
+
+### KAKO DELUJE :dizzy:
+
 1. Uporabnik se prijavi
    - Registrira svoj paketnik z ID, ki ga je dobil ob nakupu nabiralnika
   
@@ -25,3 +27,8 @@ Implementirana:
   - admin lahko registrira novega dostavljalca
   - admin se določi preko baze
   - admin lahko briše uporabnike ter spreminja iz navadnega uporabnika v dostavljalca
+
+
+### RAZVIJALCA :godmode:
+  - Ivan Jovanović
+  - Tilen Pintarić
